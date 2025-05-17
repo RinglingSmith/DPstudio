@@ -1,16 +1,22 @@
 body {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
-  padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#controls {
+    margin-bottom: 20px;
 }
 
 canvas {
-  border: 1px solid #ccc;
-  background: white;
-  cursor: crosshair;
-}
-
-.controls {
-  margin-top: 10px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: crosshair;
+    margin-top: 20px;
 }
