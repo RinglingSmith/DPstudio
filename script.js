@@ -11,8 +11,8 @@ let scale = 1;
 let isPanning = false;
 let panStartX = 0;
 let panStartY = 0;
+let startX, startY;
 
-// Get mouse position relative to canvas
 function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -21,7 +21,6 @@ function getMousePos(canvas, evt) {
     };
 }
 
-// Start painting (mousedown event)
 function startPaint(evt) {
     painting = true;
     const pos = getMousePos(canvas, evt);
@@ -29,35 +28,39 @@ function startPaint(evt) {
     ctx.moveTo(pos.x, pos.y);
 }
 
-// Stop painting (mouseup or mouseout event)
 function endPaint() {
     painting = false;
     ctx.closePath();
 }
 
-// Draw on canvas (mousemove event)
 function draw(evt) {
     if (!painting) return;
 
     const pos = getMousePos(canvas, evt);
-
     ctx.lineWidth = brushSize * scale;
     ctx.lineCap = 'round';
     ctx.strokeStyle = brushColor;
 
     if (brushType === 'round') {
         ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
     } else if (brushType === 'square') {
         ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
     } else if (brushType === 'spray') {
-        ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2, true);
-        ctx.fill();
+        const sprayCount = 15;
+        for (let i = 0; i < sprayCount; i++) {
+            const xOffset = Math.random() * brushSize - brushSize / 2;
+            const yOffset = Math.random() * brushSize - brushSize / 2;
+            ctx.beginPath();
+            ctx.arc(pos.x + xOffset, pos.y + yOffset, 1, 0, Math.PI * 2);
+            ctx.fillStyle = brushColor;
+            ctx.fill();
+        }
     }
-
-    ctx.stroke();
 }
 
-// Update brush size and type
+// Update brush size and color
 document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });
@@ -129,5 +132,3 @@ canvas.addEventListener('mousemove', (evt) => {
 canvas.addEventListener('mouseup', () => {
     isPanning = false;
 });
-
-
