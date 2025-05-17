@@ -3,28 +3,36 @@ const ctx = canvas.getContext('2d');
 
 let painting = false;
 
-function startPaint(e) {
+function getMousePos(canvas, evt) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
+function startPaint(evt) {
   painting = true;
-  draw(e);
+  const pos = getMousePos(canvas, evt);
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
 }
 
 function endPaint() {
   painting = false;
-  ctx.beginPath();
+  ctx.closePath();
 }
 
-function draw(e) {
+function draw(evt) {
   if (!painting) return;
 
+  const pos = getMousePos(canvas, evt);
   ctx.lineWidth = document.getElementById('brushSize').value;
   ctx.lineCap = 'round';
   ctx.strokeStyle = document.getElementById('colorPicker').value;
 
-  const rect = canvas.getBoundingClientRect();
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
 }
 
 canvas.addEventListener('mousedown', startPaint);
