@@ -78,6 +78,11 @@ function draw(evt) {
 
     switch (brushType) {
         case 'round':
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2); // Draw circle
+            ctx.fill();
+            break;
+            
         case 'square':
         case 'eraser':
             ctx.lineTo(pos.x, pos.y);
@@ -224,7 +229,7 @@ document.getElementById('colorPicker').addEventListener('input', e => {
 });
 
 document.getElementById('brushSize').addEventListener('input', e => {
-    brushSize = parseInt(e.target.value, 10); // Ensure numeric
+    brushSize = parseInt(e.target.value, 10); 
     ctx.lineWidth = brushSize;
 });
 
