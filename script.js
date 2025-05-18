@@ -1,8 +1,6 @@
 history.push(canvas.toDataURL());
 historyStep = 0;
 console.log("Undo history length:", history.length, "Current step:", historyStep);
-console.log("History array:", history);
-console.log("Current history step:", historyStep);
 
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas.getContext('2d');
@@ -16,11 +14,6 @@ let offsetX = 0;
 let offsetY = 0;
 let history = [];
 let historyStep = -1;
-
-window.addEventListener('load', () => {
-    history.push(canvas.toDataURL());
-    historyStep = 1; 
-});
 
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
@@ -156,27 +149,6 @@ if (brushType === 'eraser') {
                 ctx.fill();
             }
             break;
-    }
-}
-
-function endPaint() {
-    if (historyStep < history.length - 1) {
-    history = history.slice(0, historyStep + 1);
-}
-history.push(canvas.toDataURL());
-historyStep++;
-}
-
-
-function undo() {
-    if (historyStep > 0) {
-        historyStep--;
-        let img = new Image();
-        img.src = history[historyStep];
-        img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-        };
     }
 }
 
