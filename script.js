@@ -47,18 +47,17 @@ function draw(evt) {
 
     const pos = getMousePos(evt);
 
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
+    ctx.globalAlpha = 1.0; 
+    ctx.globalCompositeOperation = 'source-over'; 
 
-    if (brushType === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out'; // Set eraser mode
-        ctx.strokeStyle = 'rgba(0,0,0,1)'; // Color doesn't matter for eraser
-        ctx.fillStyle = 'rgba(0,0,0,1)';
-    } else {
-        ctx.globalCompositeOperation = 'source-over'; // Set drawing mode
-        ctx.strokeStyle = brushColor;
-        ctx.fillStyle = brushColor;
-    }
+if (brushType === 'eraser') {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.strokeStyle = 'rgba(0,0,0,1)';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+} else {
+    ctx.strokeStyle = brushColor;
+    ctx.fillStyle = brushColor;
+}
 
     switch (brushType) {
         case 'round':
@@ -169,6 +168,13 @@ function undo() {
     }
 }
 
+function fixCanvasResolution() {
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    ctx.scale(ratio, ratio);
+}
+
 // Touch support
 function handleTouchStart(e) {
     e.preventDefault();
@@ -242,6 +248,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 window.onload = () => {
+    fixCanvasResolution();
     history.push(canvas.toDataURL());
     historyStep = 0;
 };
