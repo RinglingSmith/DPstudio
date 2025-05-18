@@ -11,27 +11,18 @@
 
     <!-- Controls Section -->
     <div id="controls">
-        <label for="colorPicker">Brush Color: </label>
-        <input type="color" id="colorPicker" value="#000000">
-        
-        <label for="brushSize">Brush Size: </label>
-        <input type="range" id="brushSize" min="1" max="50" value="5">
-
-        <label for="brushType">Brush Type: </label>
-        <select id="brushType">
-            <option value="round">Round</option>
-            <option value="square">Square</option>
-            <option value="spray">Spray</option>
-        </select>
-
-        <button id="clearBtn">Clear</button>
-        <button id="savePngBtn">Save as PNG</button>
-        <button id="saveJpgBtn">Save as JPG</button>
+       <input type="color" id="colorPicker">
+<input type="range" id="brushSize">
+<select id="brushType">
+  <option value="round">Round</option>
+  <option value="square">Square</option>
+  <option value="spray">Spray</option>
+</select>
+<button id="clearBtn">Clear</button>
+<button id="savePngBtn">Save as PNG</button>
+<button id="saveJpgBtn">Save as JPG</button>
+<canvas id="paintCanvas" width="800" height="600"></canvas>
     </div>
-
-    <!-- Canvas Section -->
-    <canvas id="paintCanvas" width="800" height="600"></canvas>
-
     <script src="script.js"></script>
 </body>
 </html>
