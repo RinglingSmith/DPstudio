@@ -8,6 +8,8 @@ let brushType = 'round';
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
+let history = [];
+let historyStep = -1;
 
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
@@ -146,6 +148,32 @@ if (brushType === 'eraser') {
     }
 }
 
+function endPaint() {
+    painting = false;
+    ctx.closePath();
+
+    // Save state
+    if (historyStep < history.length - 1) {
+        history = history.slice(0, historyStep + 1);
+    }
+
+    history.push(canvas.toDataURL());
+    historyStep++;
+}
+
+function undo() {
+    if (historyStep > 0) {
+        historyStep--;
+        let canvasPic = new Image();
+        canvasPic.src = history[historyStep];
+        canvasPic.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(canvasPic, 0, 0);
+        };
+    }
+}
+
+
 function handleTouchStart(e) {
     e.preventDefault();
     painting = true;
@@ -222,6 +250,12 @@ document.getElementById('eraser').addEventListener('click', () => {
         brushType = 'round';
     } else {
         brushType = 'eraser';
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        undo();
     }
 });
 
