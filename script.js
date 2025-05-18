@@ -1,37 +1,13 @@
-const canvas = document.getElementById('paintCanvas');
-const ctx = canvas.getContext('2d');
-
-let painting = false;
-let brushSize = 5;
-let brushColor = '#000000';
-let brushType = 'round';
-let scale = 1;
-let offsetX = 0;
-let offsetY = 0;
-
-function getMousePos(evt) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: (evt.clientX - rect.left - offsetX) / scale,
-        y: (evt.clientY - rect.top - offsetY) / scale
-    };
-}
-
-function startPaint(evt) {
-    painting = true;
-    const pos = getMousePos(evt);
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-}
-
-function endPaint() {
-    painting = false;
-    ctx.closePath();
-}
-
 function draw(evt) {
-     if (isEraser) {
-        ctx.globalCompositeOperation = 'destination-out'; // Eraser mode
+    if (!painting) return;
+
+    const pos = getMousePos(evt); // ✅ This needs to be first!
+
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
+
+    if (isEraser) {
+        ctx.globalCompositeOperation = 'destination-out'; // Set to erase
         ctx.strokeStyle = 'rgba(0,0,0,1)';
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
@@ -40,12 +16,9 @@ function draw(evt) {
         return;
     }
 
-    if (!painting) return;
-    const pos = getMousePos(evt);
+    ctx.globalCompositeOperation = 'source-over'; // Normal drawing
     ctx.strokeStyle = brushColor;
     ctx.fillStyle = brushColor;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
 
     switch (brushType) {
         case 'round':
@@ -112,8 +85,7 @@ function draw(evt) {
             break;
 
         case 'pixel':
-            const size = brushSize;
-            ctx.fillRect(pos.x, pos.y, size, size);
+            ctx.fillRect(pos.x, pos.y, brushSize, brushSize);
             break;
 
         case 'mirrorX':
@@ -137,47 +109,5 @@ function draw(evt) {
             break;
     }
 }
-
-canvas.addEventListener('mousedown', startPaint);
-canvas.addEventListener('mouseup', endPaint);
-canvas.addEventListener('mouseout', endPaint);
-canvas.addEventListener('mousemove', draw);
-
-document.getElementById('colorPicker').addEventListener('input', (e) => {
-    brushColor = e.target.value;
-});
-
-document.getElementById('brushSize').addEventListener('input', (e) => {
-    brushSize = e.target.value;
-});
-
-document.getElementById('brushType').addEventListener('change', (e) => {
-    brushType = e.target.value;
-});
-
-document.getElementById('clearBtn').addEventListener('click', () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-document.getElementById('savePngBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'drawing.png';
-    a.click();
-});
-
-document.getElementById('saveJpgBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/jpeg');
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'drawing.jpg';
-    a.click();
-});
-
-document.getElementById('eraserBtn').addEventListener('click', () => {
-    isEraser = !isEraser;
-    document.getElementById('eraserBtn').textContent = isEraser ? 'Pen' : 'Eraser';
-});
 
 
