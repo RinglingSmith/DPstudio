@@ -51,15 +51,16 @@ function draw(evt) {
     ctx.lineCap = 'round';
 
     if (brushType === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.strokeStyle = 'rgba(0,0,0,1)'; 
-        ctx.fillStyle = 'rgba(0,0,0,1)';    
+        // Set globalCompositeOperation for eraser mode
+        ctx.globalCompositeOperation = 'destination-out';  // This is what makes the eraser work
+        ctx.strokeStyle = 'rgba(0,0,0,1)';  // For eraser, color doesn't matter because we're erasing
+        ctx.fillStyle = 'rgba(0,0,0,1)';
     } else {
+        // For regular brushes, use the selected color
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = brushColor;
         ctx.fillStyle = brushColor;
     }
-
 
     switch (brushType) {
         case 'round':
@@ -223,12 +224,11 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
 
 document.getElementById('eraser').addEventListener('click', () => {
     if (brushType === 'eraser') {
-        brushType = 'round';  
+        brushType = 'round';  // Switch back to the default brush type
     } else {
-        brushType = 'eraser';  
+        brushType = 'eraser';  // Set brush type to eraser
     }
 });
-
 
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
@@ -237,7 +237,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Initialize history with blank canvas
 window.onload = () => {
     history.push(canvas.toDataURL());
     historyStep = 0;
