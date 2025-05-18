@@ -1,6 +1,5 @@
 history.push(canvas.toDataURL());
 historyStep = 0;
-console.log("Undo history length:", history.length, "Current step:", historyStep);
 
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas.getContext('2d');
@@ -52,6 +51,7 @@ if (brushType === 'eraser') {
     ctx.strokeStyle = brushColor;
     ctx.fillStyle = brushColor;
 }
+
 
     switch (brushType) {
         case 'round':
@@ -151,6 +151,31 @@ if (brushType === 'eraser') {
     }
 }
 
+function endPaint() {
+    if (!painting) return;
+    painting = false;
+    ctx.closePath();
+
+    if (historyStep < history.length - 1) {
+        history = history.slice(0, historyStep + 1); 
+    }
+
+    history.push(canvas.toDataURL());
+    historyStep++;
+}
+
+function undo() {
+    if (historyStep > 0) {
+        historyStep--;
+        let img = new Image();
+        img.src = history[historyStep];
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        };
+    }
+}
+
 function handleTouchStart(e) {
     e.preventDefault();
     painting = true;
@@ -177,32 +202,6 @@ function handleTouchEnd(e) {
     const mouseEvent = new MouseEvent("mouseup", {});
     canvas.dispatchEvent(mouseEvent);
 }
-
-function endPaint() {
-    if (!painting) return;
-    painting = false;
-    ctx.closePath();
-
-    if (historyStep < history.length - 1) {
-        history = history.slice(0, historyStep + 1); 
-    }
-
-    history.push(canvas.toDataURL());
-    historyStep++;
-}
-
-function undo() {
-    if (historyStep > 0) {
-        historyStep--;
-        let img = new Image();
-        img.src = history[historyStep];
-        img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-        };
-    }
-}
-
 
 // Attach correct touch event listeners
 canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
@@ -262,4 +261,5 @@ document.addEventListener('keydown', (e) => {
         undo();
     }
 });
+
 
