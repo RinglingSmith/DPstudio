@@ -40,6 +40,9 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+document.getElementById('undoBtn').addEventListener('click', undo);
+
+
 // Call saveState after every drawing action
 function draw(evt) {
   if (!painting) return;
