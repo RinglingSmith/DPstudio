@@ -1,3 +1,7 @@
+history.push(canvas.toDataURL());
+historyStep = 0;
+console.log("Undo history length:", history.length, "Current step:", historyStep);
+
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -149,11 +153,13 @@ if (brushType === 'eraser') {
 }
 
 function endPaint() {
+    if (!painting) return;
     painting = false;
     ctx.closePath();
 
+    // Save current canvas to history
     if (historyStep < history.length - 1) {
-        history = history.slice(0, historyStep + 1);
+        history = history.slice(0, historyStep + 1); // Remove future states if any
     }
 
     history.push(canvas.toDataURL());
@@ -163,11 +169,11 @@ function endPaint() {
 function undo() {
     if (historyStep > 0) {
         historyStep--;
-        const canvasPic = new Image();
-        canvasPic.src = history[historyStep];
-        canvasPic.onload = () => {
+        let img = new Image();
+        img.src = history[historyStep];
+        img.onload = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(canvasPic, 0, 0);
+            ctx.drawImage(img, 0, 0);
         };
     }
 }
@@ -252,9 +258,9 @@ document.getElementById('eraser').addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
         undo();
     }
 });
-
 
