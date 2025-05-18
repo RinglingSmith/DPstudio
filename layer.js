@@ -3,9 +3,9 @@ const layerList = document.getElementById('layerList');
 
 let layers = [];
 let activeLayerIndex = 0;
+let painting = false;
 
-// Initial setup
-addLayer(); // Add the first layer
+addLayer(); // Start with one layer
 
 function addLayer() {
   const canvas = document.createElement('canvas');
@@ -15,37 +15,71 @@ function addLayer() {
   canvas.style.position = 'absolute';
   canvas.style.top = '0';
   canvas.style.left = '0';
-  canvasWrapper.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
-
+  canvasWrapper.appendChild(canvas);
   layers.push({ canvas, ctx });
 
   activeLayerIndex = layers.length - 1;
-  updateLayerUI();
-  attachCanvasEvents(canvas);
+  updateLayerList();
 }
 
 function removeLayer() {
-  if (layers.length <= 1) return alert('You need at least one layer.');
-
-  const layer = layers.pop();
-  canvasWrapper.removeChild(layer.canvas);
+  if (layers.length <= 1) return alert("Can't remove the last layer");
+  const removed = layers.pop();
+  canvasWrapper.removeChild(removed.canvas);
   activeLayerIndex = layers.length - 1;
-  updateLayerUI();
+  updateLayerList();
 }
 
-function updateLayerUI() {
+function updateLayerList() {
   layerList.innerHTML = '';
   layers.forEach((layer, i) => {
     const li = document.createElement('li');
     li.textContent = `Layer ${i + 1}`;
     li.style.cursor = 'pointer';
-    if (i === activeLayerIndex) li.style.fontWeight = 'bold';
+    li.style.fontWeight = i === activeLayerIndex ? 'bold' : 'normal';
     li.onclick = () => {
       activeLayerIndex = i;
-      updateLayerUI();
+      updateLayerList();
     };
     layerList.appendChild(li);
   });
 }
+
+function getPos(evt, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top,
+  };
+}
+
+canvasWrapper.addEventListener('mousedown', (e) => {
+  painting = true;
+  const { ctx, canvas } = layers[activeLayerIndex];
+  const pos = getPos(e, canvas);
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+});
+
+canvasWrapper.addEventListener('mousemove', (e) => {
+  if (!painting) return;
+  const { ctx, canvas } = layers[activeLayerIndex];
+  const pos = getPos(e, canvas);
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = '#000';
+  ctx.lineCap = 'round';
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+});
+
+['mouseup', 'mouseleave'].forEach(event =>
+  canvasWrapper.addEventListener(event, () => {
+    painting = false;
+    const { ctx } = layers[activeLayerIndex];
+    ctx.closePath();
+  })
+);

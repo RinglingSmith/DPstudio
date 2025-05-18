@@ -23,20 +23,18 @@
             <button id="savePngBtn">Save as PNG</button>
             <button id="saveJpgBtn">Save as JPG</button>
         </div>
-        <div id="layerControls">
-        <h3>Layers</h3>
-        <ul id="layerList"></ul>
-            <button onclick="addLayer()">➕ Add Layer</button>
-            <button onclick="removeLayer()">🗑️ Remove Layer</button>
-        </div>
+
     </header>
     <main>
         <canvas id="paintCanvas" width="800" height="600"></canvas>
     </main>
     <aside>
-    <div id="canvasWrapper" style="position: relative; width: 800px; height: 600px;">
-  <!-- Layers will be appended here -->
-    </div>
+ <div id="canvasWrapper" style="position:relative; width:800px; height:600px; border:1px solid #ccc;"></div>
+
+<ul id="layerList" style="margin-top:10px;"></ul>
+
+<button onclick="addLayer()">Add Layer</button>
+<button onclick="removeLayer()">Remove Layer</button>
     </aside>
 
     <script src="script.js"></script>
