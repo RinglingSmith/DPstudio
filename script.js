@@ -152,7 +152,6 @@ function endPaint() {
     painting = false;
     ctx.closePath();
 
-    // Save state
     if (historyStep < history.length - 1) {
         history = history.slice(0, historyStep + 1);
     }
@@ -164,7 +163,7 @@ function endPaint() {
 function undo() {
     if (historyStep > 0) {
         historyStep--;
-        let canvasPic = new Image();
+        const canvasPic = new Image();
         canvasPic.src = history[historyStep];
         canvasPic.onload = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -172,7 +171,6 @@ function undo() {
         };
     }
 }
-
 
 function handleTouchStart(e) {
     e.preventDefault();
