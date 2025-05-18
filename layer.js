@@ -32,7 +32,6 @@ function removeLayer() {
 }
 
 function selectLayer(id) {
-  // Set the selected layer's canvas context as active
   const canvas = document.getElementById(id);
   ctx = canvas.getContext('2d');
 }

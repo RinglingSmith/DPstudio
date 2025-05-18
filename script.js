@@ -128,13 +128,11 @@ function draw(evt) {
     }
 }
 
-// Event Listeners
 canvas.addEventListener('mousedown', startPaint);
 canvas.addEventListener('mouseup', endPaint);
 canvas.addEventListener('mouseout', endPaint);
 canvas.addEventListener('mousemove', draw);
 
-// Control Panel
 document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });

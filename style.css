@@ -1,4 +1,4 @@
-/* Base Reset */
+
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +6,7 @@
 }
 
 main {
-    margin-left: 270px; /* Width of sidebar + some spacing */
+    margin-left: 270px; 
 }
 
 body {
@@ -25,7 +25,6 @@ h1 {
   font-size: 2em;
 }
 
-/* Controls Container */
 #controls {
   background-color: #2c2c2c;
   padding: 15px 20px;
@@ -68,7 +67,6 @@ h1 {
   transform: scale(0.98);
 }
 
-/* Canvas */
 canvas {
   border: 1px solid #444;
   background-color: #ffffff;
@@ -87,17 +85,17 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none; /* Let all layers respond to events */
+  pointer-events: none; 
 }
 
 #sidebar {
     width: 250px;
     padding: 20px;
-    background-color: #2c2c2c; /* Match dark theme */
+    background-color: #2c2c2c; 
     border-right: 2px solid #444;
     position: fixed;
     top: 0;
-    left: 0; /* 🔁 changed from right: 0 */
+    left: 0; 
     height: 100%;
     overflow-y: auto;
     color: white;
@@ -119,14 +117,14 @@ canvas {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    background-color: #4CAF50;
+    background-color: #5f5f5f;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 #sidebar button:hover {
-    background-color: #45a049;
+    background-color: #ffffff;
 }
 
 #sidebar ul {

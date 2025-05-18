@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Resize all canvas layers inside the wrapper
     const canvases = canvasWrapper.querySelectorAll('canvas');
     canvases.forEach((canvas) => {
       const ctx = canvas.getContext('2d');
@@ -21,13 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       canvas.width = newWidth;
       canvas.height = newHeight;
-
-      // Optional: clear and restore image data
+      
       ctx.clearRect(0, 0, newWidth, newHeight);
       ctx.putImageData(imageData, 0, 0);
     });
 
-    // Update the wrapper size to match new canvas size
     canvasWrapper.style.width = newWidth + 'px';
     canvasWrapper.style.height = newHeight + 'px';
   });
