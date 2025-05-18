@@ -76,3 +76,17 @@ canvas {
 canvas:active {
   transform: scale(0.99);
 }
+
+#canvasWrapper {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  border: 1px solid #ccc;
+}
+
+.layerCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* Let all layers respond to events */
+}

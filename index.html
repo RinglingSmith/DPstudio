@@ -23,22 +23,22 @@
             <button id="savePngBtn">Save as PNG</button>
             <button id="saveJpgBtn">Save as JPG</button>
         </div>
-
     </header>
     <main>
-        <canvas id="paintCanvas" width="800" height="600"></canvas>
+        <!-- This will hold the layers and handle painting -->
+        <div id="canvasWrapper" style="position:relative; width:800px; height:600px; border:1px solid #ccc;">
+            <!-- Layers will be added dynamically here -->
+        </div>
     </main>
+
     <aside>
- <div id="canvasWrapper" style="position:relative; width:800px; height:600px; border:1px solid #ccc;"></div>
+        <ul id="layerList" style="margin-top:10px;"></ul>
 
-<ul id="layerList" style="margin-top:10px;"></ul>
-
-<button onclick="addLayer()">Add Layer</button>
-<button onclick="removeLayer()">Remove Layer</button>
+        <button onclick="addLayer()">Add Layer</button>
+        <button onclick="removeLayer()">Remove Layer</button>
     </aside>
 
     <script src="script.js"></script>
     <script src="layer.js"></script>
 </body>
 </html>
-
