@@ -90,3 +90,55 @@ canvas:active {
   left: 0;
   pointer-events: none; /* Let all layers respond to events */
 }
+
+#sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-left: 2px solid #ccc;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#sidebar h3 {
+    margin-top: 0;
+}
+
+#sidebar div {
+    margin-bottom: 15px;
+}
+
+#sidebar input[type="range"] {
+    width: 100%;
+}
+
+#sidebar button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#sidebar button:hover {
+    background-color: #45a049;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+#sidebar ul li:hover {
+    font-weight: bold;
+}
