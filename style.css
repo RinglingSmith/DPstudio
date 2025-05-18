@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+main {
+    margin-left: 270px; /* Width of sidebar + some spacing */
+}
+
 body {
   background-color: #1e1e1e;
   font-family: 'Segoe UI', sans-serif;
@@ -76,6 +80,7 @@ canvas {
   width: 800px;
   height: 600px;
   border: 1px solid #ccc;
+  margin-left: 270px;
 }
 
 .layerCanvas {
@@ -88,13 +93,14 @@ canvas {
 #sidebar {
     width: 250px;
     padding: 20px;
-    background-color: #f4f4f4;
-    border-left: 2px solid #ccc;
+    background-color: #2c2c2c; /* Match dark theme */
+    border-right: 2px solid #444;
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0; /* 🔁 changed from right: 0 */
     height: 100%;
     overflow-y: auto;
+    color: white;
 }
 
 #sidebar h3 {
