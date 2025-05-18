@@ -74,12 +74,16 @@ function draw(evt) {
     switch (brushType) {
         case 'round':
         case 'square':
-        case 'eraser':
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+        case 'eraser': {
+           ctx.lineTo(pos.x, pos.y);
+           ctx.stroke();
+           ctx.beginPath();
+           ctx.arc(pos.x, pos.y, brushSize / 2, 0, 2 * Math.PI);
+           ctx.fill();
+           ctx.beginPath();
+           ctx.moveTo(pos.x, pos.y);
             break;
+        }
 
         case 'spray':
         case 'fuzzy': {
@@ -97,7 +101,7 @@ function draw(evt) {
             break;
         }
 
-        case 'marker':
+        case 'marker': {
             ctx.globalAlpha = 0.1;
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
@@ -105,6 +109,7 @@ function draw(evt) {
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
             break;
+        }
 
         case 'calligraphy': {
             const angle = Math.PI / 6;
@@ -131,8 +136,9 @@ function draw(evt) {
             ctx.globalAlpha = 1.0;
             break;
 
-        case 'pixel':
+        case 'pixel': {
             ctx.fillRect(pos.x, pos.y, brushSize, brushSize);
+        }    
             break;
 
         case 'mirrorX': {
