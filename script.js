@@ -1,5 +1,9 @@
 const canvas = document.getElementById('paintCanvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas?.getContext('2d');
+
+if (!canvas || !ctx) {
+    throw new Error("Canvas or context not found.");
+}
 
 let painting = false;
 let brushSize = 5;
@@ -17,13 +21,13 @@ function fixCanvasResolution() {
     const width = canvas.offsetWidth;
     const height = canvas.offsetHeight;
 
-    const oldData = canvas.toDataURL(); // Preserve existing drawing
+    const oldData = canvas.toDataURL();
 
     canvas.width = width * ratio;
     canvas.height = height * ratio;
+
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    // Restore old drawing after resize
     const img = new Image();
     img.src = oldData;
     img.onload = () => ctx.drawImage(img, 0, 0);
@@ -39,7 +43,6 @@ function getMousePos(evt) {
 
 function startPaint(evt) {
     painting = true;
-    ctx.lineWidth = brushSize; // Apply brush size on paint start
     const pos = getMousePos(evt);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -63,19 +66,10 @@ function draw(evt) {
 
     const pos = getMousePos(evt);
     ctx.lineWidth = brushSize;
-
-    // Set initial blending and colors
     ctx.globalAlpha = 1.0;
-    ctx.globalCompositeOperation = 'source-over';
-
-    if (brushType === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.fillStyle = 'rgba(0,0,0,1)';
-    } else {
-        ctx.strokeStyle = brushColor;
-        ctx.fillStyle = brushColor;
-    }
+    ctx.globalCompositeOperation = brushType === 'eraser' ? 'destination-out' : 'source-over';
+    ctx.strokeStyle = brushType === 'eraser' ? 'rgba(0,0,0,1)' : brushColor;
+    ctx.fillStyle = ctx.strokeStyle;
 
     switch (brushType) {
         case 'round':
@@ -88,16 +82,20 @@ function draw(evt) {
             break;
 
         case 'spray':
-            for (let i = 0; i < 20; i++) {
+        case 'fuzzy': {
+            const dotSize = brushType === 'fuzzy' ? 0.8 : 1;
+            const count = brushType === 'fuzzy' ? 20 : 20;
+            for (let i = 0; i < count; i++) {
                 const angle = Math.random() * 2 * Math.PI;
                 const radius = Math.random() * brushSize;
                 const x = pos.x + radius * Math.cos(angle);
                 const y = pos.y + radius * Math.sin(angle);
                 ctx.beginPath();
-                ctx.arc(x, y, 1, 0, 2 * Math.PI);
+                ctx.arc(x, y, dotSize, 0, 2 * Math.PI);
                 ctx.fill();
             }
             break;
+        }
 
         case 'marker':
             ctx.globalAlpha = 0.1;
@@ -108,19 +106,7 @@ function draw(evt) {
             ctx.moveTo(pos.x, pos.y);
             break;
 
-        case 'fuzzy':
-            for (let i = 0; i < 20; i++) {
-                const angle = Math.random() * 2 * Math.PI;
-                const radius = Math.random() * brushSize;
-                const x = pos.x + radius * Math.cos(angle);
-                const y = pos.y + radius * Math.sin(angle);
-                ctx.beginPath();
-                ctx.arc(x, y, 0.8, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-            break;
-
-        case 'calligraphy':
+        case 'calligraphy': {
             const angle = Math.PI / 6;
             const dx = Math.cos(angle) * brushSize;
             const dy = Math.sin(angle) * brushSize;
@@ -129,6 +115,7 @@ function draw(evt) {
             ctx.lineTo(pos.x + dx, pos.y + dy);
             ctx.stroke();
             break;
+        }
 
         case 'airbrush':
             for (let i = 0; i < 30; i++) {
@@ -148,13 +135,12 @@ function draw(evt) {
             ctx.fillRect(pos.x, pos.y, brushSize, brushSize);
             break;
 
-        case 'mirrorX':
+        case 'mirrorX': {
             const mirrorX = canvas.width / (window.devicePixelRatio || 1) - pos.x;
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
-
             ctx.beginPath();
             ctx.moveTo(mirrorX, pos.y);
             ctx.lineTo(mirrorX, pos.y);
@@ -162,6 +148,7 @@ function draw(evt) {
             ctx.beginPath();
             ctx.moveTo(mirrorX, pos.y);
             break;
+        }
 
         case 'patternDot':
             for (let i = 0; i < 10; i++) {
@@ -173,43 +160,32 @@ function draw(evt) {
 
         default:
             console.warn(`Unknown brush type: ${brushType}`);
-            break;
     }
 }
 
-// Get touch position relative to canvas
+// Touch support
 function getTouchPos(e) {
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0] || e.changedTouches[0];
     return {
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top
+        clientX: touch.clientX,
+        clientY: touch.clientY
     };
 }
 
-// Start touch
 function handleTouchStart(e) {
     e.preventDefault();
-    const pos = getTouchPos(e);
-    painting = true;
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
+    startPaint(getTouchPos(e));
 }
 
-// Draw on touch move
 function handleTouchMove(e) {
     e.preventDefault();
-    if (!painting) return;
-    const pos = getTouchPos(e);
-    draw({ clientX: pos.x, clientY: pos.y, isTouch: true });
+    draw(getTouchPos(e));
 }
 
-// End touch
 function handleTouchEnd(e) {
     e.preventDefault();
-    if (!painting) return;
-    painting = false;
-    ctx.beginPath();
+    endPaint();
 }
 
 function undo() {
@@ -224,7 +200,7 @@ function undo() {
     }
 }
 
-// Event Listeners
+// Event listeners
 canvas.addEventListener("mousedown", startPaint);
 canvas.addEventListener("mouseup", endPaint);
 canvas.addEventListener("mouseout", endPaint);
@@ -235,12 +211,13 @@ canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
 canvas.addEventListener("touchcancel", handleTouchEnd, { passive: false });
 
+// UI controls
 document.getElementById('colorPicker').addEventListener('input', e => {
     brushColor = e.target.value;
 });
 
 document.getElementById('brushSize').addEventListener('input', e => {
-    brushSize = parseInt(e.target.value, 10); 
+    brushSize = parseInt(e.target.value, 10);
     ctx.lineWidth = brushSize;
 });
 
@@ -276,7 +253,7 @@ document.getElementById('eraser').addEventListener('click', () => {
     brushTypeSelector.dispatchEvent(new Event('change'));
 });
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
         undo();
