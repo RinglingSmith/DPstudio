@@ -57,6 +57,13 @@ if (brushType === 'eraser') {
             ctx.moveTo(pos.x, pos.y);
             break;
 
+        case 'eraser':
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+    break;    
+
         case 'spray':
             for (let i = 0; i < 20; i++) {
                 const angle = Math.random() * 2 * Math.PI;
