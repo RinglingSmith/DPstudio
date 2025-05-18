@@ -16,9 +16,17 @@ function fixCanvasResolution() {
     const ratio = window.devicePixelRatio || 1;
     const width = canvas.offsetWidth;
     const height = canvas.offsetHeight;
+
+    const oldData = canvas.toDataURL(); // Preserve existing drawing
+
     canvas.width = width * ratio;
     canvas.height = height * ratio;
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    // Restore old drawing after resize
+    const img = new Image();
+    img.src = oldData;
+    img.onload = () => ctx.drawImage(img, 0, 0);
 }
 
 function getMousePos(evt) {
@@ -31,6 +39,7 @@ function getMousePos(evt) {
 
 function startPaint(evt) {
     painting = true;
+    ctx.lineWidth = brushSize; // Apply brush size on paint start
     const pos = getMousePos(evt);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -53,8 +62,8 @@ function draw(evt) {
     if (!painting) return;
 
     const pos = getMousePos(evt);
+    ctx.lineWidth = brushSize;
 
-    // Reset draw modes every time
     ctx.globalAlpha = 1.0;
     ctx.globalCompositeOperation = 'source-over';
 
@@ -210,11 +219,23 @@ canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
 canvas.addEventListener("touchcancel", handleTouchEnd, { passive: false });
 
-document.getElementById('colorPicker').addEventListener('input', e => brushColor = e.target.value);
-document.getElementById('brushSize').addEventListener('input', e => brushSize = e.target.value);
-document.getElementById('brushType').addEventListener('change', e => brushType = e.target.value);
+document.getElementById('colorPicker').addEventListener('input', e => {
+    brushColor = e.target.value;
+});
 
-document.getElementById('clearBtn').addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
+document.getElementById('brushSize').addEventListener('input', e => {
+    brushSize = parseInt(e.target.value, 10); // Ensure numeric
+    ctx.lineWidth = brushSize;
+});
+
+document.getElementById('brushType').addEventListener('change', e => {
+    brushType = e.target.value;
+    ctx.lineWidth = brushSize;
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
 
 document.getElementById('savePngBtn').addEventListener('click', () => {
     const dataURL = canvas.toDataURL('image/png');
@@ -234,8 +255,9 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
 
 document.getElementById('eraser').addEventListener('click', () => {
     brushType = (brushType === 'eraser') ? 'round' : 'eraser';
-    document.getElementById('brushType').value = brushType;
-    document.getElementById('brushType').dispatchEvent(new Event('change'));
+    const brushTypeSelector = document.getElementById('brushType');
+    brushTypeSelector.value = brushType;
+    brushTypeSelector.dispatchEvent(new Event('change'));
 });
 
 document.addEventListener('keydown', (e) => {
@@ -247,16 +269,14 @@ document.addEventListener('keydown', (e) => {
 
 window.onload = () => {
     fixCanvasResolution();
+    ctx.lineWidth = brushSize;
 
-    // Optionally push initial empty canvas to history
     history.push(canvas.toDataURL());
     historyStep = 0;
 
-    // Optional: set default brush size and color UI if present
     document.getElementById('brushSize').value = brushSize;
     document.getElementById('colorPicker').value = brushColor;
     document.getElementById('brushType').value = brushType;
 };
 
-// Optional: Re-fix resolution on window resize
 window.addEventListener('resize', fixCanvasResolution);
