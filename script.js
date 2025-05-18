@@ -177,30 +177,39 @@ function draw(evt) {
     }
 }
 
+// Get touch position relative to canvas
+function getTouchPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
+}
+
+// Start touch
 function handleTouchStart(e) {
     e.preventDefault();
-    const touch = e.touches[0];
-    const mouseEvent = new MouseEvent("mousedown", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-    });
-    canvas.dispatchEvent(mouseEvent);
+    const pos = getTouchPos(e);
+    painting = true;
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
 }
 
+// Draw on touch move
 function handleTouchMove(e) {
     e.preventDefault();
-    const touch = e.touches[0];
-    const mouseEvent = new MouseEvent("mousemove", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-    });
-    canvas.dispatchEvent(mouseEvent);
+    if (!painting) return;
+    const pos = getTouchPos(e);
+    draw({ clientX: pos.x, clientY: pos.y, isTouch: true });
 }
 
+// End touch
 function handleTouchEnd(e) {
     e.preventDefault();
-    const mouseEvent = new MouseEvent("mouseup", {});
-    canvas.dispatchEvent(mouseEvent);
+    if (!painting) return;
+    painting = false;
+    ctx.beginPath();
 }
 
 function undo() {
