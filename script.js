@@ -79,8 +79,10 @@ function draw(evt) {
     switch (brushType) {
         case 'round':
             ctx.beginPath();
-            ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2); // Draw circle
-            ctx.fill();
+            ctx.moveTo(lastPos.x, lastPos.y);  
+            ctx.lineTo(pos.x, pos.y);          
+            ctx.stroke();                      
+            lastPos = pos;                  
             break;
             
         case 'square':
