@@ -1,4 +1,4 @@
-== Draw&Paint Studio version alpha tested. ==
+=Draw&Paint Studio version alpha tested.
 
 Note: Most of poitons on DPstudio did'i work.
 
