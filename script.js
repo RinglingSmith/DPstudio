@@ -128,23 +128,43 @@ function draw(evt) {
     }
 }
 
+function handleTouchStart(e) {
+    e.preventDefault();
+    painting = true;
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function handleTouchEnd(e) {
+    e.preventDefault();
+    const mouseEvent = new MouseEvent("mouseup", {});
+    canvas.dispatchEvent(mouseEvent);
+}
+
+// Attach correct touch event listeners
+canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
+canvas.addEventListener("touchcancel", handleTouchEnd, { passive: false });
+
 canvas.addEventListener('mousedown', startPaint);
 canvas.addEventListener('mouseup', endPaint);
 canvas.addEventListener('mouseout', endPaint);
 canvas.addEventListener('mousemove', draw);
-
-canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-});
-canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-});
-canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-});
-canvas.addEventListener('touchcancel', (e) => {
-    e.preventDefault();
-});
 
 
 document.getElementById('colorPicker').addEventListener('input', (e) => {
