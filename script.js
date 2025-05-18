@@ -32,20 +32,21 @@ function endPaint() {
 function draw(evt) {
     if (!painting) return;
 
-    const pos = getMousePos(evt);
+const pos = getMousePos(evt);
 
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
+ctx.lineWidth = brushSize;
+ctx.lineCap = 'round';
 
-    if (brushType === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.fillStyle = 'rgba(0,0,0,1)';
-    } else {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = brushColor;
-        ctx.fillStyle = brushColor;
-    }
+if (brushType === 'eraser') {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.strokeStyle = 'rgba(0,0,0,1)';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+} else {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = brushColor;
+    ctx.fillStyle = brushColor;
+}
+
 
     switch (brushType) {
         case 'round':
