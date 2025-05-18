@@ -1,13 +1,13 @@
 function draw(evt) {
     if (!painting) return;
 
-    const pos = getMousePos(evt); // ✅ This needs to be first!
+    const pos = getMousePos(evt); 
 
     ctx.lineWidth = brushSize;
     ctx.lineCap = 'round';
 
     if (isEraser) {
-        ctx.globalCompositeOperation = 'destination-out'; // Set to erase
+        ctx.globalCompositeOperation = 'destination-out'; 
         ctx.strokeStyle = 'rgba(0,0,0,1)';
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
@@ -16,7 +16,7 @@ function draw(evt) {
         return;
     }
 
-    ctx.globalCompositeOperation = 'source-over'; // Normal drawing
+    ctx.globalCompositeOperation = 'source-over'; 
     ctx.strokeStyle = brushColor;
     ctx.fillStyle = brushColor;
 
@@ -110,4 +110,51 @@ function draw(evt) {
     }
 }
 
+canvas.addEventListener('mousedown', startPaint);
+canvas.addEventListener('mouseup', endPaint);
+canvas.addEventListener('mouseout', endPaint);
+canvas.addEventListener('mousemove', draw);
+
+document.getElementById('colorPicker').addEventListener('input', (e) => {
+    brushColor = e.target.value;
+});
+
+document.getElementById('brushSize').addEventListener('input', (e) => {
+    brushSize = e.target.value;
+});
+
+document.getElementById('brushType').addEventListener('change', (e) => {
+    brushType = e.target.value;
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+document.getElementById('savePngBtn').addEventListener('click', () => {
+    const dataURL = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = 'drawing.png';
+    a.click();
+});
+
+document.getElementById('saveJpgBtn').addEventListener('click', () => {
+    const dataURL = canvas.toDataURL('image/jpeg');
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = 'drawing.jpg';
+    a.click();
+});
+
+// Flag for toggling eraser mode
+let isEraser = false;
+
+// Event listener for the eraser toggle button
+document.getElementById('eraserBtn').addEventListener('click', () => {
+    isEraser = !isEraser;
+
+    // Update button text to reflect current mode
+    document.getElementById('eraserBtn').textContent = isEraser ? 'Pen' : 'Eraser';
+});
 
