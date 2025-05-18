@@ -4,14 +4,22 @@ const ctx = canvas.getContext('2d');
 let painting = false;
 let brushSize = 5;
 let brushColor = '#000000';
-let brushType = 'round';  // Default brush type is round
+let brushType = 'round';
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
 
-// Undo history
 let history = [];
 let historyStep = -1;
+
+function fixCanvasResolution() {
+    const ratio = window.devicePixelRatio || 1;
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
 
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
@@ -33,7 +41,6 @@ function endPaint() {
     painting = false;
     ctx.closePath();
 
-    // Save canvas state for undo
     if (historyStep < history.length - 1) {
         history = history.slice(0, historyStep + 1);
     }
@@ -47,29 +54,24 @@ function draw(evt) {
 
     const pos = getMousePos(evt);
 
-    ctx.globalAlpha = 1.0; 
-    ctx.globalCompositeOperation = 'source-over'; 
+    // Reset draw modes every time
+    ctx.globalAlpha = 1.0;
+    ctx.globalCompositeOperation = 'source-over';
 
-if (brushType === 'eraser') {
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.strokeStyle = 'rgba(0,0,0,1)';
-    ctx.fillStyle = 'rgba(0,0,0,1)';
-} else {
-    ctx.strokeStyle = brushColor;
-    ctx.fillStyle = brushColor;
-}
+    if (brushType === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+    } else {
+        ctx.strokeStyle = brushColor;
+        ctx.fillStyle = brushColor;
+    }
 
     switch (brushType) {
         case 'round':
         case 'square':
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-            break;
-
         case 'eraser':
-            ctx.lineTo(pos.x, pos.y); // This will "erase" the canvas
+            ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
@@ -92,6 +94,8 @@ if (brushType === 'eraser') {
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             ctx.globalAlpha = 1.0;
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
             break;
 
         case 'fuzzy':
@@ -135,7 +139,7 @@ if (brushType === 'eraser') {
             break;
 
         case 'mirrorX':
-            const mirrorX = canvas.width - pos.x;
+            const mirrorX = canvas.width / (window.devicePixelRatio || 1) - pos.x;
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             ctx.beginPath();
@@ -166,13 +170,6 @@ function undo() {
             ctx.drawImage(img, 0, 0);
         };
     }
-}
-
-function fixCanvasResolution() {
-    const ratio = window.devicePixelRatio || 1;
-    canvas.width = canvas.offsetWidth * ratio;
-    canvas.height = canvas.offsetHeight * ratio;
-    ctx.scale(ratio, ratio);
 }
 
 // Touch support
@@ -218,6 +215,7 @@ document.getElementById('brushSize').addEventListener('input', e => brushSize = 
 document.getElementById('brushType').addEventListener('change', e => brushType = e.target.value);
 
 document.getElementById('clearBtn').addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
+
 document.getElementById('savePngBtn').addEventListener('click', () => {
     const dataURL = canvas.toDataURL('image/png');
     const a = document.createElement('a');
@@ -225,6 +223,7 @@ document.getElementById('savePngBtn').addEventListener('click', () => {
     a.download = 'drawing.png';
     a.click();
 });
+
 document.getElementById('saveJpgBtn').addEventListener('click', () => {
     const dataURL = canvas.toDataURL('image/jpeg');
     const a = document.createElement('a');
@@ -233,10 +232,9 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
-// Toggle between eraser and brush
 document.getElementById('eraser').addEventListener('click', () => {
-    brushType = (brushType === 'eraser') ? 'round' : 'eraser'; // Toggle brush type
-    document.getElementById('brushType').value = brushType; // Update brush type dropdown
+    brushType = (brushType === 'eraser') ? 'round' : 'eraser';
+    document.getElementById('brushType').value = brushType;
     document.getElementById('brushType').dispatchEvent(new Event('change'));
 });
 
@@ -249,6 +247,16 @@ document.addEventListener('keydown', (e) => {
 
 window.onload = () => {
     fixCanvasResolution();
+
+    // Optionally push initial empty canvas to history
     history.push(canvas.toDataURL());
     historyStep = 0;
+
+    // Optional: set default brush size and color UI if present
+    document.getElementById('brushSize').value = brushSize;
+    document.getElementById('colorPicker').value = brushColor;
+    document.getElementById('brushType').value = brushType;
 };
+
+// Optional: Re-fix resolution on window resize
+window.addEventListener('resize', fixCanvasResolution);
