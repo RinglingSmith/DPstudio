@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 let painting = false;
 let brushSize = 5;
 let brushColor = '#000000';
-let brushType = 'round';
+let brushType = 'round';  // Default brush type is round
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
@@ -51,11 +51,11 @@ function draw(evt) {
     ctx.lineCap = 'round';
 
     if (brushType === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.globalCompositeOperation = 'destination-out'; // Set eraser mode
+        ctx.strokeStyle = 'rgba(0,0,0,1)'; // Color doesn't matter for eraser
         ctx.fillStyle = 'rgba(0,0,0,1)';
     } else {
-        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalCompositeOperation = 'source-over'; // Set drawing mode
         ctx.strokeStyle = brushColor;
         ctx.fillStyle = brushColor;
     }
@@ -70,7 +70,7 @@ function draw(evt) {
             break;
 
         case 'eraser':
-            ctx.lineTo(pos.x, pos.y);
+            ctx.lineTo(pos.x, pos.y); // This will "erase" the canvas
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
@@ -227,10 +227,11 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
+// Toggle between eraser and brush
 document.getElementById('eraser').addEventListener('click', () => {
-    const brushTypeSelect = document.getElementById('brushType');
-    brushTypeSelect.value = (brushTypeSelect.value === 'eraser') ? 'round' : 'eraser';
-    brushTypeSelect.dispatchEvent(new Event('change'));
+    brushType = (brushType === 'eraser') ? 'round' : 'eraser'; // Toggle brush type
+    document.getElementById('brushType').value = brushType; // Update brush type dropdown
+    document.getElementById('brushType').dispatchEvent(new Event('change'));
 });
 
 document.addEventListener('keydown', (e) => {
