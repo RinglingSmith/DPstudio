@@ -210,11 +210,10 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
 });
 
 document.getElementById('eraser').addEventListener('click', () => {
-    const brushTypeSelect = document.getElementById('brushType');
-    if (brushTypeSelect.value === 'eraser') {
-        brushTypeSelect.value = 'round';
+    if (brushType === 'eraser') {
+        brushType = 'round';
     } else {
-        brushTypeSelect.value = 'eraser';
+        brushType = 'eraser';
     }
 });
 
