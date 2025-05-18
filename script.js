@@ -30,6 +30,16 @@ function endPaint() {
 }
 
 function draw(evt) {
+     if (isEraser) {
+        ctx.globalCompositeOperation = 'destination-out'; // Eraser mode
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        return;
+    }
+
     if (!painting) return;
     const pos = getMousePos(evt);
     ctx.strokeStyle = brushColor;
@@ -164,4 +174,10 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.download = 'drawing.jpg';
     a.click();
 });
+
+document.getElementById('eraserBtn').addEventListener('click', () => {
+    isEraser = !isEraser;
+    document.getElementById('eraserBtn').textContent = isEraser ? 'Pen' : 'Eraser';
+});
+
 
