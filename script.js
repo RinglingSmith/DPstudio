@@ -52,13 +52,14 @@ function draw(evt) {
 
     if (brushType === 'eraser') {
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.fillStyle = 'rgba(0,0,0,1)';
+        ctx.strokeStyle = 'rgba(0,0,0,1)'; 
+        ctx.fillStyle = 'rgba(0,0,0,1)';    
     } else {
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = brushColor;
         ctx.fillStyle = brushColor;
     }
+
 
     switch (brushType) {
         case 'round':
@@ -221,8 +222,13 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
 });
 
 document.getElementById('eraser').addEventListener('click', () => {
-    brushType = (brushType === 'eraser') ? 'round' : 'eraser';
+    if (brushType === 'eraser') {
+        brushType = 'round';  
+    } else {
+        brushType = 'eraser';  
+    }
 });
+
 
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
