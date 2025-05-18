@@ -76,16 +76,65 @@ function draw(evt) {
                 ctx.fill();
             }
             break;
+
+        case 'calligraphy':
+            const angle = Math.PI / 6;
+            const dx = Math.cos(angle) * brushSize;
+            const dy = Math.sin(angle) * brushSize;
+            ctx.beginPath();
+            ctx.moveTo(pos.x - dx, pos.y - dy);
+            ctx.lineTo(pos.x + dx, pos.y + dy);
+            ctx.stroke();
+            break;
+
+        case 'airbrush':
+            for (let i = 0; i < 30; i++) {
+                const a = Math.random() * 2 * Math.PI;
+                const r = Math.random() * brushSize;
+                const x = pos.x + r * Math.cos(a);
+                const y = pos.y + r * Math.sin(a);
+                ctx.globalAlpha = Math.random() * 0.2;
+                ctx.beginPath();
+                ctx.arc(x, y, 1, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1.0;
+            break;
+
+        case 'pixel':
+            const size = brushSize;
+            ctx.fillRect(pos.x, pos.y, size, size);
+            break;
+
+        case 'mirrorX':
+            const mirrorX = canvas.width - pos.x;
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(mirrorX, pos.y);
+            ctx.lineTo(mirrorX, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            break;
+
+        case 'patternDot':
+            for (let i = 0; i < 10; i++) {
+                ctx.beginPath();
+                ctx.arc(pos.x + i, pos.y + i, 1.5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            break;
     }
 }
 
-// ✅ Now we add the event listeners — outside the draw function
+// Event Listeners
 canvas.addEventListener('mousedown', startPaint);
 canvas.addEventListener('mouseup', endPaint);
 canvas.addEventListener('mouseout', endPaint);
 canvas.addEventListener('mousemove', draw);
 
-// Control UI logic
+// Control Panel
 document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });
@@ -117,3 +166,4 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.download = 'drawing.jpg';
     a.click();
 });
+
