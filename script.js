@@ -69,6 +69,13 @@ function draw(evt) {
             ctx.moveTo(pos.x, pos.y);
             break;
 
+        case 'eraser':
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            break;
+
         case 'spray':
             for (let i = 0; i < 20; i++) {
                 const angle = Math.random() * 2 * Math.PI;
@@ -225,7 +232,6 @@ document.getElementById('eraser').addEventListener('click', () => {
     brushTypeSelect.value = (brushTypeSelect.value === 'eraser') ? 'round' : 'eraser';
     brushTypeSelect.dispatchEvent(new Event('change'));
 });
-
 
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
