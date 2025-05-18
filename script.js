@@ -64,6 +64,7 @@ function draw(evt) {
     const pos = getMousePos(evt);
     ctx.lineWidth = brushSize;
 
+    // Set initial blending and colors
     ctx.globalAlpha = 1.0;
     ctx.globalCompositeOperation = 'source-over';
 
@@ -78,14 +79,6 @@ function draw(evt) {
 
     switch (brushType) {
         case 'round':
-        case 'square':
-        case 'eraser':
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-            break;
-            
         case 'square':
         case 'eraser':
             ctx.lineTo(pos.x, pos.y);
@@ -160,11 +153,14 @@ function draw(evt) {
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+
+            ctx.beginPath();
             ctx.moveTo(mirrorX, pos.y);
             ctx.lineTo(mirrorX, pos.y);
             ctx.stroke();
             ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+            ctx.moveTo(mirrorX, pos.y);
             break;
 
         case 'patternDot':
@@ -173,6 +169,10 @@ function draw(evt) {
                 ctx.arc(pos.x + i, pos.y + i, 1.5, 0, 2 * Math.PI);
                 ctx.fill();
             }
+            break;
+
+        default:
+            console.warn(`Unknown brush type: ${brushType}`);
             break;
     }
 }
