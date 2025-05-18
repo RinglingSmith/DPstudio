@@ -53,7 +53,6 @@ if (brushType === 'eraser') {
     ctx.fillStyle = brushColor;
 }
 
-
     switch (brushType) {
         case 'round':
         case 'square':
@@ -178,6 +177,33 @@ function handleTouchEnd(e) {
     const mouseEvent = new MouseEvent("mouseup", {});
     canvas.dispatchEvent(mouseEvent);
 }
+
+function endPaint() {
+    if (!painting) return;
+    painting = false;
+    ctx.closePath();
+
+    // Save current canvas to history
+    if (historyStep < history.length - 1) {
+        history = history.slice(0, historyStep + 1); // Remove future states if any
+    }
+
+    history.push(canvas.toDataURL());
+    historyStep++;
+}
+
+function undo() {
+    if (historyStep > 0) {
+        historyStep--;
+        let img = new Image();
+        img.src = history[historyStep];
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        };
+    }
+}
+
 
 // Attach correct touch event listeners
 canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
