@@ -40,15 +40,15 @@ function draw(evt) {
         ctx.fillStyle = brushColor;
     }
     
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
 
    if (!painting) return;
-    const pos = getMousePos(evt);
-    ctx.strokeStyle = brushColor;
-    ctx.fillStyle = brushColor;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
+        const pos = getMousePos(evt);
+        ctx.strokeStyle = brushColor;
+        ctx.fillStyle = brushColor;
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
 
     switch (brushType) {
         case 'round':
@@ -212,7 +212,7 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
-document.getElementById('eraser').addEventListener('click', () =&gt; {
+document.getElementById('eraser').addEventListener('click', () => {
     const brushTypeSelect = document.getElementById('brushType');
     if (brushTypeSelect.value === 'eraser') {
         brushTypeSelect.value = 'round';
