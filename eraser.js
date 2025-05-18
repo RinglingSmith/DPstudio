@@ -2,9 +2,27 @@
 let history = [];
 let historyIndex = -1; // Points to the current state in the history stack
 
+// Variables for drawing and erasing
+let painting = false;
+let brushColor = document.getElementById('colorPicker').value; // Brush color
+let brushWidth = document.getElementById('brushSize').value; // Brush size
+let isEraser = false; // Flag to check if eraser tool is selected
+
+// Set the canvas and context
+const paintCanvas = document.getElementById('paintCanvas');
+const ctx = paintCanvas.getContext('2d');
+
+// Get mouse position
+function getMousePos(evt) {
+  const rect = paintCanvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
 // Save the current state of the canvas
 function saveState() {
-  // Save the current state of the canvas (as an image)
   const state = paintCanvas.toDataURL();  // Get the current image data
   historyIndex++;
   if (historyIndex < history.length) {
@@ -27,24 +45,7 @@ function undo() {
   }
 }
 
-// Event listener for mouse drawing
-let painting = false;
-let brushColor = document.getElementById('colorPicker').value; // Brush color
-let brushWidth = document.getElementById('brushSize').value; // Brush size
-
-const paintCanvas = document.getElementById('paintCanvas');
-const ctx = paintCanvas.getContext('2d');
-
-// Get mouse position
-function getMousePos(evt) {
-  const rect = paintCanvas.getBoundingClientRect();
-  return {
-    x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top
-  };
-}
-
-// Start drawing
+// Start drawing or erasing
 function startPaint(evt) {
   painting = true;
   const pos = getMousePos(evt);
@@ -52,18 +53,25 @@ function startPaint(evt) {
   ctx.moveTo(pos.x, pos.y);
 }
 
-// End drawing
+// End drawing or erasing
 function endPaint() {
   painting = false;
   ctx.closePath();
 }
 
-// Draw on canvas
+// Draw on canvas or erase
 function draw(evt) {
   if (!painting) return;
 
   const pos = getMousePos(evt);
-  ctx.strokeStyle = brushColor;
+  if (isEraser) {
+    ctx.globalCompositeOperation = 'destination-out'; // Set composite operation for eraser
+    ctx.strokeStyle = 'rgba(0, 0, 0, 1)'; // Eraser color (just needs to be a visible color)
+  } else {
+    ctx.globalCompositeOperation = 'source-over'; // Reset to normal drawing
+    ctx.strokeStyle = brushColor; // Drawing color
+  }
+
   ctx.lineWidth = brushWidth;
   ctx.lineCap = 'round';
 
@@ -72,10 +80,10 @@ function draw(evt) {
   ctx.beginPath();
   ctx.moveTo(pos.x, pos.y);
 
-  saveState(); // Save the state after drawing
+  saveState(); // Save the state after drawing or erasing
 }
 
-// Event listeners for drawing
+// Event listeners for mouse drawing and erasing
 paintCanvas.addEventListener('mousedown', startPaint);
 paintCanvas.addEventListener('mouseup', endPaint);
 paintCanvas.addEventListener('mouseout', endPaint);
@@ -91,6 +99,12 @@ document.addEventListener('keydown', (event) => {
 
 // Event listener for undo button
 document.getElementById('undoBtn').addEventListener('click', undo);
+
+// Event listener for eraser button
+document.getElementById('eraserBtn').addEventListener('click', () => {
+  isEraser = !isEraser; // Toggle between drawing and erasing
+  document.getElementById('eraserBtn').textContent = isEraser ? 'Pen' : 'Eraser'; // Change button text
+});
 
 // Initialize by saving the empty canvas state
 window.onload = () => {
