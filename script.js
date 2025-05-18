@@ -1,7 +1,5 @@
-window.addEventListener('load', () => {
-    history.push(canvas.toDataURL());
-    historyStep = 0;
-});
+history.push(canvas.toDataURL());
+historyStep = 0;
 
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas.getContext('2d');
