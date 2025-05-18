@@ -17,6 +17,11 @@ let offsetY = 0;
 let history = [];
 let historyStep = -1;
 
+window.addEventListener('load', () => {
+    history.push(canvas.toDataURL());
+    historyStep = 1; 
+});
+
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -155,19 +160,13 @@ if (brushType === 'eraser') {
 }
 
 function endPaint() {
-    if (!painting) return;
-    painting = false;
-    ctx.closePath();
-
     if (historyStep < history.length - 1) {
-        history = history.slice(0, historyStep + 1);
-    }
-
-    history.push(canvas.toDataURL());
-    historyStep++;
-
-    console.log("Undo history length:", history.length, "Current step:", historyStep);
+    history = history.slice(0, historyStep + 1);
 }
+history.push(canvas.toDataURL());
+historyStep++;
+}
+
 
 function undo() {
     if (historyStep > 0) {
