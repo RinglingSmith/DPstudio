@@ -51,12 +51,10 @@ function draw(evt) {
     ctx.lineCap = 'round';
 
     if (brushType === 'eraser') {
-        // Set globalCompositeOperation for eraser mode
-        ctx.globalCompositeOperation = 'destination-out';  // This is what makes the eraser work
-        ctx.strokeStyle = 'rgba(0,0,0,1)';  // For eraser, color doesn't matter because we're erasing
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
         ctx.fillStyle = 'rgba(0,0,0,1)';
     } else {
-        // For regular brushes, use the selected color
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = brushColor;
         ctx.fillStyle = brushColor;
@@ -223,12 +221,11 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
 });
 
 document.getElementById('eraser').addEventListener('click', () => {
-    if (brushType === 'eraser') {
-        brushType = 'round';  // Switch back to the default brush type
-    } else {
-        brushType = 'eraser';  // Set brush type to eraser
-    }
+    const brushTypeSelect = document.getElementById('brushType');
+    brushTypeSelect.value = (brushTypeSelect.value === 'eraser') ? 'round' : 'eraser';
+    brushTypeSelect.dispatchEvent(new Event('change'));
 });
+
 
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
