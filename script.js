@@ -133,6 +133,20 @@ canvas.addEventListener('mouseup', endPaint);
 canvas.addEventListener('mouseout', endPaint);
 canvas.addEventListener('mousemove', draw);
 
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+});
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+});
+canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+});
+canvas.addEventListener('touchcancel', (e) => {
+    e.preventDefault();
+});
+
+
 document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });
