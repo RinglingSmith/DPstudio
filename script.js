@@ -78,11 +78,12 @@ function draw(evt) {
 
     switch (brushType) {
         case 'round':
+        case 'square':
+        case 'eraser':
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
             ctx.beginPath();
-            ctx.moveTo(lastPos.x, lastPos.y);  
-            ctx.lineTo(pos.x, pos.y);          
-            ctx.stroke();                      
-            lastPos = pos;                  
+            ctx.moveTo(pos.x, pos.y);
             break;
             
         case 'square':
@@ -176,19 +177,6 @@ function draw(evt) {
     }
 }
 
-function undo() {
-    if (historyStep > 0) {
-        historyStep--;
-        const img = new Image();
-        img.src = history[historyStep];
-        img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-        };
-    }
-}
-
-// Touch support
 function handleTouchStart(e) {
     e.preventDefault();
     const touch = e.touches[0];
@@ -213,6 +201,18 @@ function handleTouchEnd(e) {
     e.preventDefault();
     const mouseEvent = new MouseEvent("mouseup", {});
     canvas.dispatchEvent(mouseEvent);
+}
+
+function undo() {
+    if (historyStep > 0) {
+        historyStep--;
+        const img = new Image();
+        img.src = history[historyStep];
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        };
+    }
 }
 
 // Event Listeners
