@@ -4,7 +4,6 @@ console.log("Undo history length:", history.length, "Current step:", historyStep
 console.log("History array:", history);
 console.log("Current history step:", historyStep);
 
-
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -161,11 +160,13 @@ function endPaint() {
     ctx.closePath();
 
     if (historyStep < history.length - 1) {
-        history = history.slice(0, historyStep + 1); 
+        history = history.slice(0, historyStep + 1);
     }
 
     history.push(canvas.toDataURL());
     historyStep++;
+
+    console.log("Undo history length:", history.length, "Current step:", historyStep);
 }
 
 function undo() {
