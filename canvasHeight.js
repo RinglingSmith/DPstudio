@@ -1,3 +1,5 @@
+// canvasPaintApp.js
+
 // Get canvas elements
 const paintCanvas = document.getElementById('paintCanvas');
 const ctx = paintCanvas.getContext('2d');
@@ -13,12 +15,10 @@ const clearBtn = document.getElementById('clearBtn');
 const savePngBtn = document.getElementById('savePngBtn');
 const saveJpgBtn = document.getElementById('saveJpgBtn');
 
-// Initialize painting variables
+// Painting state
 let painting = false;
-let brushColor = colorPicker.value;
-let brushWidth = brushSize.value;
 
-// Paint function
+// Get mouse position relative to canvas
 function getMousePos(evt) {
   const rect = paintCanvas.getBoundingClientRect();
   return {
@@ -27,24 +27,29 @@ function getMousePos(evt) {
   };
 }
 
+// Start drawing
 function startPaint(evt) {
   painting = true;
-  const pos = getMousePos(evt);
   ctx.beginPath();
+  const pos = getMousePos(evt);
   ctx.moveTo(pos.x, pos.y);
+  draw(evt); // Immediate draw for click/tap
 }
 
+// Stop drawing
 function endPaint() {
   painting = false;
   ctx.closePath();
 }
 
+// Draw on canvas
 function draw(evt) {
   if (!painting) return;
   const pos = getMousePos(evt);
-  ctx.strokeStyle = brushColor;
-  ctx.lineWidth = brushWidth;
-  ctx.lineCap = 'round';
+
+  ctx.strokeStyle = colorPicker.value;
+  ctx.lineWidth = parseInt(brushSize.value);
+  ctx.lineCap = brushType.value; // 'round' or 'square'
 
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
@@ -52,21 +57,40 @@ function draw(evt) {
   ctx.moveTo(pos.x, pos.y);
 }
 
-// Event listeners for drawing
+// Canvas event listeners
 paintCanvas.addEventListener('mousedown', startPaint);
 paintCanvas.addEventListener('mouseup', endPaint);
 paintCanvas.addEventListener('mouseout', endPaint);
 paintCanvas.addEventListener('mousemove', draw);
 
-// Resize Canvas
+// Touch support (optional for mobile)
+paintCanvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  startPaint(e.touches[0]);
+});
+paintCanvas.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  endPaint();
+});
+paintCanvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  draw(e.touches[0]);
+});
+
+// Resize canvas
 resizeCanvasBtn.addEventListener('click', () => {
   const newWidth = parseInt(canvasWidthInput.value);
   const newHeight = parseInt(canvasHeightInput.value);
-
   if (newWidth >= 100 && newHeight >= 100) {
+    // Optional: Save current drawing as image
+    const imageData = ctx.getImageData(0, 0, paintCanvas.width, paintCanvas.height);
+
+    // Resize canvas
     paintCanvas.width = newWidth;
     paintCanvas.height = newHeight;
-    ctx.clearRect(0, 0, newWidth, newHeight); // Clear canvas after resize
+
+    // Restore image (optional, comment out if you want a clear canvas on resize)
+    ctx.putImageData(imageData, 0, 0);
   }
 });
 
@@ -75,20 +99,24 @@ clearBtn.addEventListener('click', () => {
   ctx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
 });
 
-// Save Canvas as PNG
+// Save canvas as PNG
 savePngBtn.addEventListener('click', () => {
   const dataURL = paintCanvas.toDataURL('image/png');
-  const a = document.createElement('a');
-  a.href = dataURL;
-  a.download = 'drawing.png';
-  a.click();
+  downloadImage(dataURL, 'drawing.png');
 });
 
-// Save Canvas as JPG
+// Save canvas as JPG
 saveJpgBtn.addEventListener('click', () => {
-  const dataURL = paintCanvas.toDataURL('image/jpeg');
+  const dataURL = paintCanvas.toDataURL('image/jpeg', 0.9); // Quality optional
+  downloadImage(dataURL, 'drawing.jpg');
+});
+
+// Helper to trigger download
+function downloadImage(dataURL, filename) {
   const a = document.createElement('a');
   a.href = dataURL;
-  a.download = 'drawing.jpg';
+  a.download = filename;
+  document.body.appendChild(a);
   a.click();
-});
+  document.body.removeChild(a);
+}
