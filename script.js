@@ -1,24 +1,41 @@
+const canvas = document.getElementById('paintCanvas');
+const ctx = canvas.getContext('2d');
+
+let painting = false;
+let brushSize = 5;
+let brushColor = '#000000';
+let brushType = 'round';
+let scale = 1;
+let offsetX = 0;
+let offsetY = 0;
+
+function getMousePos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (evt.clientX - rect.left - offsetX) / scale,
+        y: (evt.clientY - rect.top - offsetY) / scale
+    };
+}
+
+function startPaint(evt) {
+    painting = true;
+    const pos = getMousePos(evt);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+}
+
+function endPaint() {
+    painting = false;
+    ctx.closePath();
+}
+
 function draw(evt) {
-    if (!painting) return;
-
-    const pos = getMousePos(evt); 
-
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-
-    if (isEraser) {
-        ctx.globalCompositeOperation = 'destination-out'; 
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        return;
-    }
-
-    ctx.globalCompositeOperation = 'source-over'; 
+   if (!painting) return;
+    const pos = getMousePos(evt);
     ctx.strokeStyle = brushColor;
     ctx.fillStyle = brushColor;
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
 
     switch (brushType) {
         case 'round':
@@ -85,7 +102,8 @@ function draw(evt) {
             break;
 
         case 'pixel':
-            ctx.fillRect(pos.x, pos.y, brushSize, brushSize);
+            const size = brushSize;
+            ctx.fillRect(pos.x, pos.y, size, size);
             break;
 
         case 'mirrorX':
@@ -147,14 +165,6 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
-// Flag for toggling eraser mode
-let isEraser = false;
 
-// Event listener for the eraser toggle button
-document.getElementById('eraserBtn').addEventListener('click', () => {
-    isEraser = !isEraser;
 
-    // Update button text to reflect current mode
-    document.getElementById('eraserBtn').textContent = isEraser ? 'Pen' : 'Eraser';
-});
 
