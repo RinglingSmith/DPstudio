@@ -30,6 +30,19 @@ function endPaint() {
 }
 
 function draw(evt) {
+    if (brushType === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+    } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = brushColor;
+        ctx.fillStyle = brushColor;
+    }
+    
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
+
    if (!painting) return;
     const pos = getMousePos(evt);
     ctx.strokeStyle = brushColor;
@@ -199,6 +212,13 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
-
+document.getElementById('eraser').addEventListener('click', () =&gt; {
+    const brushTypeSelect = document.getElementById('brushType');
+    if (brushTypeSelect.value === 'eraser') {
+        brushTypeSelect.value = 'round';
+    } else {
+        brushTypeSelect.value = 'eraser';
+    }
+});
 
 
