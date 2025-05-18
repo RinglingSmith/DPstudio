@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adobe-style Paint</title>
+    <title>Adobe-Style Paint</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Adobe-style Paint</h1>
-
-    <!-- Controls Section -->
-    <div id="controls">
-       <input type="color" id="colorPicker">
-<input type="range" id="brushSize">
-<select id="brushType">
-  <option value="round">Round</option>
-  <option value="square">Square</option>
-  <option value="spray">Spray</option>
-</select>
-<button id="clearBtn">Clear</button>
-<button id="savePngBtn">Save as PNG</button>
-<button id="saveJpgBtn">Save as JPG</button>
-<canvas id="paintCanvas" width="800" height="600"></canvas>
-    </div>
+    <header>
+        <h1>Adobe-Style Paint</h1>
+        <div id="controls">
+            <input type="color" id="colorPicker" value="#000000">
+            <input type="range" id="brushSize" min="1" max="50" value="5">
+            <select id="brushType">
+                <option value="round">Round</option>
+                <option value="square">Square</option>
+                <option value="spray">Spray</option>
+            </select>
+            <button id="clearBtn">Clear</button>
+            <button id="savePngBtn">Save as PNG</button>
+            <button id="saveJpgBtn">Save as JPG</button>
+        </div>
+    </header>
+    <main>
+        <canvas id="paintCanvas" width="800" height="600"></canvas>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
+
