@@ -65,18 +65,15 @@ h1 {
 }
 
 /* ---------- Canvas ---------- */
-canvas {
-  border: 1px solid #444;
-  background-color: #ffffff;
-  box-shadow: 0 0 10px #000;
+#canvasWrapper {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 1px solid #ccc;
 }
 
-#canvasWrapper {
-  position: relative;
-  width: 800px;
-  height: 600px;
-  border: 1px solid #ccc;
-  margin-left: 270px; 
+canvas {
+    border: 1px dashed rgba(0,0,0,0.2); 
 }
 
 #layer-list {
