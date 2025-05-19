@@ -1,155 +1,123 @@
+// Canvas size change logic
+const widthInput = document.getElementById('canvas-width');
+const heightInput = document.getElementById('canvas-height');
+const applySizeButton = document.getElementById('apply-size');
+
+applySizeButton.addEventListener('click', () => {
+    const newWidth = parseInt(widthInput.value);
+    const newHeight = parseInt(heightInput.value);
+
+    // Save current canvas content
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(canvas, 0, 0);
+
+    // Resize canvas
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+
+    // Refill background color
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Restore previous content (scaled if new size is different)
+    ctx.drawImage(tempCanvas, 0, 0);
+});
+
+
+// Resize the canvas on load and on window resize
+function resizeCanvas() {
+    canvas.width = window.innerWidth - canvas.offsetLeft;
+    canvas.height = window.innerHeight - canvas.offsetTop;
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Refill the background when resizing
+}
+
+// Set initial canvas size
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
 const canvas = document.getElementById('drawboard');
-const ctx = canvas.getContext('2d');
 const toolbar = document.getElementById('toolbar');
+const ctx = canvas.getContext('2d');
 
-// Off-screen canvas
-const drawingSurface = document.createElement('canvas');
-const surfaceCtx = drawingSurface.getContext('2d');
-
-// Initialize canvas
-function setupCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    drawingSurface.width = 3000;
-    drawingSurface.height = 3000;
-    surfaceCtx.fillStyle = "#ffffff";
-    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
-    drawSurface(); // Initial render
-}
-setupCanvas();
-window.addEventListener('resize', setupCanvas);
-
-// Drawing state
+// Variables for drawing
 let isPainting = false;
-let lastX = 0, lastY = 0;
 let lineWidth = 5;
-let brushColor = "#000";
+let lastX, lastY;
+let brushColor = "#000";  // Default brush color
 
-// Zoom and pan
-let scale = 1;
-let originX = 0;
-let originY = 0;
-let isPanning = false;
-let startPanX = 0;
-let startPanY = 0;
-
-// Draw the visible canvas from the off-screen surface
-function drawSurface() {
-    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(scale, 0, 0, scale, originX, originY);
-    ctx.drawImage(drawingSurface, 0, 0);
-}
-
-// Draw to the off-screen canvas
+// Function to handle the smooth brush drawing
 function draw(e) {
     if (!isPainting) return;
 
-    const x = (e.clientX - originX) / scale;
-    const y = (e.clientY - originY) / scale;
+    // Get mouse position relative to the canvas
+    const mouseX = e.clientX - canvas.offsetLeft;
+    const mouseY = e.clientY - canvas.offsetTop;
 
-    surfaceCtx.lineWidth = lineWidth;
-    surfaceCtx.lineCap = 'round';
-    surfaceCtx.strokeStyle = brushColor;
+    // Set stroke properties
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = brushColor;
 
-    surfaceCtx.beginPath();
-    surfaceCtx.moveTo(lastX, lastY);
-    surfaceCtx.lineTo(x, y);
-    surfaceCtx.stroke();
+    // Create smooth lines using quadratic curve
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);
+    ctx.stroke();
 
-    lastX = x;
-    lastY = y;
-
-    drawSurface(); // Update visible canvas
+    // Update last position
+    lastX = mouseX;
+    lastY = mouseY;
 }
 
-// Mouse events
+// Mouse event listeners for painting
 canvas.addEventListener('mousedown', (e) => {
-    if (e.button === 1 || e.ctrlKey) {
-        isPanning = true;
-        startPanX = e.clientX;
-        startPanY = e.clientY;
-    } else {
-        isPainting = true;
-        lastX = (e.clientX - originX) / scale;
-        lastY = (e.clientY - originY) / scale;
-    }
-});
-
-canvas.addEventListener('mousemove', (e) => {
-    if (isPanning) {
-        originX += (e.clientX - startPanX);
-        originY += (e.clientY - startPanY);
-        startPanX = e.clientX;
-        startPanY = e.clientY;
-        drawSurface();
-    } else {
-        draw(e);
-    }
+    isPainting = true;
+    lastX = e.clientX - canvas.offsetLeft;
+    lastY = e.clientY - canvas.offsetTop;
 });
 
 canvas.addEventListener('mouseup', () => {
     isPainting = false;
-    isPanning = false;
+    ctx.beginPath();
 });
 
-canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const zoom = e.deltaY < 0 ? 1.1 : 0.9;
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
+canvas.addEventListener('mousemove', draw);
 
-    const x = (mouseX - originX) / scale;
-    const y = (mouseY - originY) / scale;
-
-    scale *= zoom;
-    originX = mouseX - x * scale;
-    originY = mouseY - y * scale;
-
-    drawSurface();
+// Event listener for changing background color
+document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+    const newColor = e.target.value;
+    canvas.style.backgroundColor = newColor;
+    ctx.fillStyle = newColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill canvas with the new color
 });
 
-// Brush settings
+// Event listener for changing brush color from toolbar
 toolbar.addEventListener('change', (e) => {
     if (e.target.id === 'stroke') {
-        brushColor = e.target.value;
+        brushColor = e.target.value;  // Update the brush color
     }
+
     if (e.target.id === 'size-slider') {
-        lineWidth = e.target.value;
+        lineWidth = e.target.value;  // Update the line width
     }
 });
 
-// Clear
+// Event listener for clearing the canvas
 document.getElementById('clear').addEventListener('click', () => {
-    surfaceCtx.fillStyle = document.getElementById('bg-color-picker').value || "#ffffff";
-    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
-    drawSurface();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';  // Reset background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
-// Save image
+// Save canvas as image
 document.querySelector('.save-img').addEventListener('click', () => {
-    const image = drawingSurface.toDataURL();
+    const image = canvas.toDataURL();  // Convert canvas to image data
     const link = document.createElement('a');
     link.href = image;
-    link.download = 'canvas.png';
+    link.download = 'canvas-image.png';
     link.click();
-});
-
-// Background color
-document.getElementById('bg-color-picker').addEventListener('input', (e) => {
-    const color = e.target.value;
-    // Fill only background (behind drawings)
-    surfaceCtx.globalCompositeOperation = 'destination-over';
-    surfaceCtx.fillStyle = color;
-    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
-    surfaceCtx.globalCompositeOperation = 'source-over';
-    drawSurface();
-});
-
-// Reset view
-document.getElementById('reset-view').addEventListener('click', () => {
-    scale = 1;
-    originX = 0;
-    originY = 0;
-    drawSurface();
 });
