@@ -1,15 +1,21 @@
 let layerCount = 1;
 let currentCanvas = document.getElementById('paintCanvas');
 let ctx = currentCanvas.getContext('2d');
-let currentLayerId = 'paintCanvas'; // needed for saving
+let currentLayerId = 'paintCanvas';
 
 const canvasWrapper = document.getElementById('canvasWrapper');
 const layerList = document.getElementById('layerList');
 
-// Create initial list item for the first layer
+// Init: style base canvas and add to layer list
+currentCanvas.style.position = 'absolute';
+currentCanvas.style.top = 0;
+currentCanvas.style.left = 0;
+currentCanvas.style.zIndex = 1;
+
 const initialLi = document.createElement('li');
 initialLi.textContent = 'Layer 1';
 initialLi.dataset.layerId = 'paintCanvas';
+initialLi.style.fontWeight = 'bold';
 initialLi.onclick = () => switchToLayer('paintCanvas');
 layerList.appendChild(initialLi);
 
@@ -32,9 +38,11 @@ function addLayer() {
   li.dataset.layerId = canvas.id;
   li.onclick = () => switchToLayer(canvas.id);
   layerList.appendChild(li);
+
+  switchToLayer(canvas.id);
 }
 
-// Remove the topmost layer
+// Remove top layer
 function removeLayer() {
   if (layerCount <= 1) {
     alert("At least one layer must remain.");
@@ -47,45 +55,43 @@ function removeLayer() {
     layerList.removeChild(layerList.lastChild);
     layerCount--;
 
-    // Switch back to previous layer
     switchToLayer(`layer${layerCount}`);
   }
 }
 
-// Switch which canvas is active for drawing
+// Switch active layer for drawing
 function switchToLayer(id) {
   const target = document.getElementById(id);
-  if (!target || target.id === currentCanvas.id) return;
+  if (!target || id === currentLayerId) return;
 
   currentCanvas = target;
   ctx = currentCanvas.getContext('2d');
   currentLayerId = id;
 
-  // Optional: highlight active layer in the UI
+  // Highlight active layer in list
   const lis = layerList.querySelectorAll('li');
   lis.forEach(li => {
     li.style.fontWeight = (li.dataset.layerId === id) ? 'bold' : 'normal';
   });
 }
 
-// Copy main drawing canvas to selected layer
+// Save canvas contents to current layer (for export or backup)
 function saveCurrentToLayer() {
   const target = document.getElementById(currentLayerId);
-  if (!target) return;
+  if (!target || target === currentCanvas) return;
 
   const targetCtx = target.getContext('2d');
   targetCtx.clearRect(0, 0, target.width, target.height);
   targetCtx.drawImage(currentCanvas, 0, 0);
 }
 
-// Save before switching or clearing
+// Clear current layer
 document.getElementById('clearBtn').addEventListener('click', () => {
-  saveCurrentToLayer();
   ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 });
 
+// Export as PNG
 document.getElementById('savePngBtn').addEventListener('click', () => {
-  saveCurrentToLayer();
   const dataURL = currentCanvas.toDataURL('image/png');
   const a = document.createElement('a');
   a.href = dataURL;
@@ -93,8 +99,8 @@ document.getElementById('savePngBtn').addEventListener('click', () => {
   a.click();
 });
 
+// Export as JPG
 document.getElementById('saveJpgBtn').addEventListener('click', () => {
-  saveCurrentToLayer();
   const dataURL = currentCanvas.toDataURL('image/jpeg');
   const a = document.createElement('a');
   a.href = dataURL;
@@ -102,5 +108,6 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
   a.click();
 });
 
+// Autosave on exit and interval
 window.addEventListener('beforeunload', () => saveCurrentToLayer());
 setInterval(saveCurrentToLayer, 5000);
