@@ -1,155 +1,32 @@
-/* ---------- Base Styles ---------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: #1e1e1e;
-  font-family: 'Segoe UI', sans-serif;
-  color: #ffffff;
+body{
   display: flex;
-  flex-direction: row;
-  padding: 20px;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: rgb(67, 67, 67);
 }
-
-/* ---------- Toolbar Styles (Left Side) ---------- */
-#toolbar {
-  background-color: #2c2c2c;
-  width: 220px; /* Wider toolbar for desktop */
-  padding: 10px 20px;
+.container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
-  z-index: 2;
-  overflow-y: auto;
-}
-
-#toolbar h1 {
-  color: #f0f0f0;
-  font-size: 1.5em;
-  margin-bottom: 20px;
-}
-
-#controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   width: 100%;
-}
-
-#controls label,
-#controls select,
-#controls input,
-#controls button {
-  color: #ffffff;
-  background: #3a3a3a;
-  border: none;
+  gap: 10px;
   padding: 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: all 0.2s ease;
+  max-width: 1050px;
 }
 
-#controls input[type="range"] {
-  width: 100px;
+section {
+  background: rgb(46, 46, 46);
 }
 
-#controls button:hover,
-#controls select:hover,
-#controls input:hover {
-  background: #505050;
-  transform: scale(1.05);
+.toolbar {
+  width: 210px;
+  padding: 15px 22px 0;
 }
 
-#controls button:active {
-  background: #666;
-  transform: scale(0.98);
+.drawboard {
+  flex: 1;
 }
 
-/* ---------- Canvas Area ---------- */
-#canvasWrapper {
-  margin-left: 240px; /* Adjusted to fit the left sidebar */
-  position: relative;
-  width: 800px;
-  height: 600px;
-  border: 1px solid #ccc;
-}
-
-canvas {
-  border: 1px dashed rgba(0,0,0,0.2); 
-}
-
-#layer-list {
-  margin-top: 10px;
-}
-
-#layer-list button {
-   margin-top: 5px;
-}
-
-/* ---------- Mobile Styles ---------- */
-@media screen and (max-width: 768px) {
-  /* Adjust body to have a vertical layout in mobile */
-  body {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Toolbar becomes horizontal on mobile */
-  #toolbar {
-    flex-direction: row;
-    position: relative;
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    padding: 10px;
-    box-shadow: none;
-    overflow-x: scroll;
-  }
-
-  #controls {
-    flex-direction: row;
-    gap: 5px;
-    overflow-x: auto;
-  }
-
-  #canvasWrapper {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 60px; /* Leave space for the toolbar */
-  }
-
-  canvas {
-    width: 100%;
-    height: 100%; 
-  }
-
-  /* Adjust canvas size for mobile */
-  canvas {
-    touch-action: none;
-  }
-
-  /* Hide the canvas and block the screen when the toolbar is at the top (mobile) */
-  #canvasWrapper {
-    display: none; /* Hide canvas */
-  }
-
-  /* Display Toggle Canvas Button on Mobile */
-  #toggleCanvasBtn {
-    display: block;
-    margin: 20px auto;
-    padding: 10px;
-    background-color: #5f5f5f;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
+.drawboard canvas{
+  width: 100%;
+  height: 100%;
 }
