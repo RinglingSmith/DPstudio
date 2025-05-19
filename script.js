@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const toolbar = document.getElementById('toolbar');
   const ctx = canvas.getContext('2d');
 
+  let selectedTool = "brush";
   let brushColor = '#000';
   let lineWidth = 5;
   let isPainting = false;
-  let isEraser = false;
   let lastX = 0;
   let lastY = 0;
 
@@ -42,15 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => resizeCanvas(true));
 
   function draw(e) {
-    if (!isPainting) return;
+  if (!isPainting) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = brushColor;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = 'round';
+
+  if (selectedTool === "brush" || selectedTool === "eraser") {
+    ctx.strokeStyle = selectedTool === "eraser"
+      ? document.getElementById('bg-color-picker').value || '#ffffff'
+      : brushColor;
 
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
@@ -60,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     lastX = mouseX;
     lastY = mouseY;
   }
+}
+
 
   canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
@@ -79,6 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   canvas.addEventListener('mousemove', draw);
+
+  document.getElementById('brush').addEventListener('click', () => {
+  selectedTool = "brush";
+});
+
+document.getElementById('eraser').addEventListener('click', () => {
+  selectedTool = "eraser";
+});
+
 
   // Stroke color
   document.getElementById('stroke').addEventListener('input', (e) => {
