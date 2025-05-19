@@ -28,6 +28,32 @@ body {
     font-size: 18px;
 }
 
+.color-picker,
+.stroke-width {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-picker label,
+.stroke-width label {
+  font-weight: 600;
+  color: #333;
+}
+
+.color-input {
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.color-input:hover {
+  opacity: 0.8;
+}
+
 .options {
     margin: 10px 0;
 }
