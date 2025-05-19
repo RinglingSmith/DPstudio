@@ -17,9 +17,9 @@ if (!canvas || !ctx) {
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
     return {
-        x: (evt.clientX - rect.left) / window.devicePixelRatio,
-        y: (evt.clientY - rect.top) / window.devicePixelRatio
-    };
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+};
 }
 
 // Start painting

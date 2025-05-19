@@ -44,11 +44,11 @@ document.getElementById('backgroundColor').addEventListener('input', (e) => {
     setBackgroundColor(e.target.value);
 });
 
-// Fix canvas resolution when the window is resized
 window.onload = () => {
     fixCanvasResolution();
+    setBackgroundColor('#FFFFFF');
 };
-window.addEventListener('resize', fixCanvasResolution);
+
 
 // Ensure the canvas is properly initialized
 console.log("Canvas width:", canvas.width);
