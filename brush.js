@@ -8,12 +8,12 @@ let brushType = 'round';
 const canvas = document.getElementById('paintCanvas');
 const ctx = canvas?.getContext('2d');
 
-// Ensure context is available
+// Ensure the canvas context exists
 if (!canvas || !ctx) {
     throw new Error("Canvas or context not found.");
 }
 
-// Function to get mouse position relative to the canvas
+// Get mouse position relative to the canvas
 function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -22,7 +22,7 @@ function getMousePos(evt) {
     };
 }
 
-// Function to start drawing
+// Start painting
 function startPaint(evt) {
     painting = true;
     const pos = getMousePos(evt);
@@ -30,14 +30,14 @@ function startPaint(evt) {
     ctx.moveTo(pos.x, pos.y);
 }
 
-// Function to stop drawing
+// Stop painting
 function endPaint() {
     if (!painting) return;
     painting = false;
     ctx.closePath();
 }
 
-// Function to draw with the brush
+// Draw based on current brush settings
 function draw(evt) {
     if (!painting) return;
 
@@ -65,7 +65,7 @@ function draw(evt) {
     }
 }
 
-// Event listeners for mouse/touch interaction
+// Mouse and touch event listeners
 canvas.addEventListener('mousedown', startPaint);
 canvas.addEventListener('mouseup', endPaint);
 canvas.addEventListener('mouseout', endPaint);
@@ -82,7 +82,7 @@ canvas.addEventListener('touchmove', (e) => {
 canvas.addEventListener('touchend', endPaint);
 canvas.addEventListener('touchcancel', endPaint);
 
-// UI Controls for brush size, color, and type
+// UI Controls for brush settings
 document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });
@@ -97,32 +97,8 @@ document.getElementById('brushType').addEventListener('change', (e) => {
     ctx.lineWidth = brushSize;
 });
 
-// Clear the canvas
+// Clear canvas button
 document.getElementById('clearBtn').addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-// Save PNG or JPG
-document.getElementById('savePngBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'drawing.png';
-    a.click();
-});
-
-document.getElementById('saveJpgBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/jpeg');
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'drawing.jpg';
-    a.click();
-});
-
-// Eraser toggle
-document.getElementById('eraser').addEventListener('click', () => {
-    brushType = brushType === 'eraser' ? 'round' : 'eraser';
-    const brushTypeSelector = document.getElementById('brushType');
-    brushTypeSelector.value = brushType;
-    brushTypeSelector.dispatchEvent(new Event('change'));
+    setBackgroundColor('#FFFFFF'); // Reset the background color to white
 });

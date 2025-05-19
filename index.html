@@ -36,11 +36,11 @@
             <button id="saveJpgBtn">Save as JPG</button>
             <button id="eraser">Eraser</button>
 
-            <!-- Layer controls -->
+            <div id="canvasWrapper">
+            <canvas id="paintCanvas" width="800" height="600"></canvas>
+            <canvas id="layerCanvas" width="800" height="600"></canvas>
+            </div>
             <button id="addLayerBtn">Add Layer</button>
-            <button id="removeLayerBtn">Remove Layer</button>
-            <button id="toggleLayerBtn">Toggle Layer Visibility</button>
-            <button id="mergeLayersBtn">Merge Layers</button>
 
             <label for="bgColorPicker">Canvas Background</label>
             <input type="color" id="bgColorPicker" value="#ffffff">
@@ -49,9 +49,8 @@
 
     <!-- ---------- Canvas Area ---------- -->
     <main>
-        <div id="canvasWrapper" style="position:relative; width:800px; height:600px; border:1px solid #ccc;">
-            <canvas id="paintCanvas" width="800" height="600" style="position:absolute; top:0; left:0; z-index:1;"></canvas>
-        </div>
+<input type="color" id="backgroundColor" value="#FFFFFF">
+<canvas id="paintCanvas" width="800" height="600"></canvas>
     </main>
 
     <script src="canvas.js"></script>
