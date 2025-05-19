@@ -79,12 +79,14 @@ canvas {
   margin-left: 270px; 
 }
 
-#layerList li {
-  cursor: pointer;
-  background: #eee;
-  padding: 4px;
-  margin-bottom: 2px;
+#layer-list {
+  margin-top: 10px;
 }
+
+#layer-list button {
+   margin-top: 5px;
+}
+
 
 /* ---------- Sidebar (Desktop) ---------- */
 #sidebar {

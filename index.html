@@ -32,13 +32,8 @@
 
            <button id="eraser">Eraser</button>
 
-     <div id="layer-list">
-        <h3>Layers</h3>
-        <!-- Layer buttons will be dynamically generated here -->
-    </div>
-
-    <script>
-        let activeLayerIndex = 0; // Active layer index
+       <script>
+        let activeLayerIndex = null; // Active layer index
 
         // Function to update the layer list from the backend
         function updateLayerList() {
@@ -82,6 +77,8 @@
                     .then(response => response.json())
                     .then(data => updateLayerList())
                     .catch(error => console.error('Error removing layer:', error));
+            } else {
+                alert('No layer selected!');
             }
         }
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class LayerServlet extends HttpServlet {
 
-    // In-memory list to store layers
     private ArrayList<String> layers = new ArrayList<>();
 
     @Override
@@ -14,31 +13,30 @@ public class LayerServlet extends HttpServlet {
         layers.add("Layer 1");
     }
 
+    // Do GET to retrieve the list of layers
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get the list of layers and send them as a response
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.println("{ \"layers\": " + layers.toString() + " }");
     }
 
+    // Do POST to add a new layer
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle adding a new layer
         String layerName = request.getParameter("layerName");
         if (layerName != null && !layerName.isEmpty()) {
             layers.add(layerName);
         }
 
-        // Respond with the updated list of layers
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.println("{ \"layers\": " + layers.toString() + " }");
     }
 
+    // Do DELETE to remove a layer by index
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle removing a layer by its index
         try {
             int layerIndex = Integer.parseInt(request.getParameter("index"));
             if (layerIndex >= 0 && layerIndex < layers.size()) {
@@ -48,11 +46,8 @@ public class LayerServlet extends HttpServlet {
             // Handle invalid index
         }
 
-        // Respond with the updated list of layers
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.println("{ \"layers\": " + layers.toString() + " }");
     }
 }
-
-
