@@ -20,6 +20,13 @@ let lineWidth = 5;
 let lastX, lastY;
 let brushColor = "#000";  // Default brush color
 
+let scale = 1;           // Zoom level
+let originX = 0;         // Pan X offset
+let originY = 0;         // Pan Y offset
+let isPanning = false;
+let startPanX, startPanY;
+
+
 // Function to handle the smooth brush drawing
 function draw(e) {
     if (!isPainting) return;
@@ -69,6 +76,24 @@ applySizeButton.addEventListener('click', () => {
 
     // Restore previous content (scaled if new size is different)
     ctx.drawImage(tempCanvas, 0, 0);
+});
+
+canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+
+    const zoomFactor = 1.1;
+    const mouseX = e.offsetX;
+    const mouseY = e.offsetY;
+
+    const direction = e.deltaY < 0 ? 1 : -1;
+    const factor = Math.pow(zoomFactor, direction);
+
+    // Adjust pan so zoom is centered around cursor
+    originX = mouseX - (mouseX - originX) * factor;
+    originY = mouseY - (mouseY - originY) * factor;
+
+    scale *= factor;
+    redrawCanvas();
 });
 
 // Mouse event listeners for painting
