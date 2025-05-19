@@ -49,9 +49,11 @@ button:hover {
 canvas {
     background-color: #fff;
     border: 1px solid #ccc;
-    display: block; /* Make canvas block-level */
-    max-width: 100%; /* Ensure canvas doesn't overflow */
-    max-height: 100vh; /* Make sure the canvas fits vertically */
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 input[type="color"] {
