@@ -43,63 +43,42 @@
     </div>
 
        <script>
-        let activeLayerIndex = null; // Active layer index
-
-        // Function to update the layer list from the backend
-        function updateLayerList() {
-            fetch('/LayerServlet')
-                .then(response => response.json())
+        function loadLayers() {
+            fetch('LayerServlet')
+                .then(res => res.json())
                 .then(data => {
-                    const layers = data.layers;
-                    const layerListDiv = document.getElementById('layer-list');
-                    layerListDiv.innerHTML = '<h3>Layers</h3>'; // Reset the layer list
-
-                    layers.forEach((layer, index) => {
-                        const layerButton = document.createElement('button');
-                        layerButton.textContent = layer;
-                        layerButton.onclick = () => setActiveLayer(index);
-                        layerListDiv.appendChild(layerButton);
+                    const list = document.getElementById('layerList');
+                    list.innerHTML = '';
+                    data.layers.forEach((layer, index) => {
+                        const li = document.createElement('li');
+                        li.textContent = layer + ' ';
+                        const delBtn = document.createElement('button');
+                        delBtn.textContent = 'Delete';
+                        delBtn.onclick = () => removeLayer(index);
+                        li.appendChild(delBtn);
+                        list.appendChild(li);
                     });
-                })
-                .catch(error => console.error('Error fetching layers:', error));
+                });
         }
 
-        // Function to add a new layer to the backend
         function addLayer() {
-            const layerName = prompt("Enter new layer name:");
-
-            if (layerName) {
-                fetch('/LayerServlet', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `layerName=${layerName}`
-                })
-                .then(response => response.json())
-                .then(data => updateLayerList())
-                .catch(error => console.error('Error adding layer:', error));
-            }
+            const name = document.getElementById('layerName').value;
+            const params = new URLSearchParams();
+            params.append('layerName', name);
+            fetch('LayerServlet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            }).then(loadLayers);
         }
 
-        // Function to remove the active layer
-        function removeLayer() {
-            if (activeLayerIndex !== null) {
-                fetch(`/LayerServlet?index=${activeLayerIndex}`, { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(data => updateLayerList())
-                    .catch(error => console.error('Error removing layer:', error));
-            } else {
-                alert('No layer selected!');
-            }
+        function removeLayer(index) {
+            fetch('LayerServlet?index=' + index, {
+                method: 'DELETE'
+            }).then(loadLayers);
         }
 
-        // Function to set the active layer by index
-        function setActiveLayer(index) {
-            activeLayerIndex = index;
-            alert(`Layer ${index + 1} is now active!`);
-        }
-
-        // Initial update of the layer list
-        updateLayerList();
+        loadLayers();
     </script>
 
           <div>

@@ -23,16 +23,32 @@ public class LayerServlet extends HttpServlet {
 
     // Do POST to add a new layer
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String layerName = request.getParameter("layerName");
-        if (layerName != null && !layerName.isEmpty()) {
-            layers.add(layerName);
-        }
-
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        out.println("{ \"layers\": " + layers.toString() + " }");
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // Read the new layer name from the request
+    String layerName = request.getParameter("layerName");
+    if (layerName != null && !layerName.isEmpty()) {
+        layers.add(layerName);
     }
+
+    // Prepare the response
+    response.setContentType("application/json");
+    PrintWriter out = response.getWriter();
+
+    // Build valid JSON
+    StringBuilder json = new StringBuilder("{ \"layers\": [");
+    for (int i = 0; i < layers.size(); i++) {
+        json.append("\"").append(layers.get(i)).append("\"");
+        if (i < layers.size() - 1) {
+            json.append(",");
+        }
+    }
+    json.append("] }");
+
+    // Send the response
+    out.println(json.toString());
+    out.flush();
+}
+
 
     // Do DELETE to remove a layer by index
     @Override
