@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let brushColor = '#000';
   let lineWidth = 5;
   let isPainting = false;
+  let isEraser = false;
   let lastX = 0;
   let lastY = 0;
 
@@ -120,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = image;
     link.download = 'canvas-image.png';
     link.click();
+  });
+
+    document.getElementById('eraser').addEventListener('click', () => {
+    isEraser = true;
   });
 
   // Apply custom size
