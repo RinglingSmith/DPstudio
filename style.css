@@ -49,8 +49,6 @@ canvas {
     border: 1px solid #ccc;
     display: block;  /* Make canvas block-level */
     flex: 1;  /* Ensure canvas fills remaining space */
-    height: 100%;  /* Make sure it stretches vertically */
-    max-width: 100%; /* Ensure canvas doesn't overflow */
 }
 
 input[type="color"] {
