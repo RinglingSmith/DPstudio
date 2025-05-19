@@ -36,10 +36,7 @@
             <button id="saveJpgBtn">Save as JPG</button>
             <button id="eraser">Eraser</button>
 
-            <div id="canvasWrapper">
-            <canvas id="paintCanvas" width="800" height="600"></canvas>
             <canvas id="layerCanvas" width="800" height="600"></canvas>
-            </div>
             <button id="addLayerBtn">Add Layer</button>
 
             <label for="bgColorPicker">Canvas Background</label>
@@ -48,10 +45,12 @@
     </div>
 
     <!-- ---------- Canvas Area ---------- -->
+      <div id="canvasWrapper">
     <main>
 <input type="color" id="backgroundColor" value="#FFFFFF">
 <canvas id="paintCanvas" width="800" height="600"></canvas>
     </main>
+    </div>
 
     <script src="canvas.js"></script>
     <script src="brush.js"></script>
