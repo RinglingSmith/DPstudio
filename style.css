@@ -70,12 +70,14 @@ h1 {
     width: 800px;
     height: 600px;
     border: 1px solid #ccc;
+    margin-top: 20px;
 }
 
 canvas {
     border: 1px dashed rgba(0,0,0,0.2); 
 }
 
+/* Layer List Styles */
 #layer-list {
   margin-top: 10px;
 }
@@ -83,7 +85,6 @@ canvas {
 #layer-list button {
    margin-top: 5px;
 }
-
 
 /* ---------- Sidebar (Desktop) ---------- */
 #sidebar {
@@ -163,9 +164,6 @@ canvas {
   canvas {
     width: 100%;
     height: 100%; 
-  }
-
-  canvas {
     touch-action: none;
   }
 
@@ -187,3 +185,4 @@ canvas {
     margin-bottom: 15px;
   }
 }
+
