@@ -5,6 +5,7 @@ const ctx = canvas.getContext('2d');
 // Get the canvas offset relative to the page
 const canvasRect = canvas.getBoundingClientRect();
 
+// Set the canvas size to match the window size
 canvas.width = window.innerWidth - canvasRect.left;
 canvas.height = window.innerHeight - canvasRect.top;
 
@@ -19,7 +20,7 @@ const draw = (e) => {
         return;
     }
 
-    // Calculate mouse position relative to canvas
+    // Adjust mouse coordinates based on the canvas position
     const mouseX = e.clientX - canvasRect.left;
     const mouseY = e.clientY - canvasRect.top;
 
@@ -48,6 +49,8 @@ document.getElementById('bg-color-picker').addEventListener('input', (e) => {
 
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
+
+    // Adjust mouse coordinates based on the canvas position
     const mouseX = e.clientX - canvasRect.left;
     const mouseY = e.clientY - canvasRect.top;
 
