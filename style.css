@@ -1,74 +1,113 @@
-body{
+/* General Body Styling */
+body {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: rgb(67, 67, 67);
+  background-color: rgb(40, 40, 40);  /* Dark background to resemble Adobe's UI */
+  margin: 0;
+  font-family: 'Arial', sans-serif;
 }
+
+/* Main container to hold toolbar and drawboard */
 .container {
   display: flex;
   width: 100%;
-  gap: 10px;
-  padding: 10px;
-  max-width: 1050px;
+  gap: 15px;
+  padding: 20px;
+  max-width: 1150px;
+  background-color: rgb(30, 30, 30);  /* Dark container background */
+  border-radius: 8px;  /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Subtle shadow for separation */
 }
 
+/* Section styling for toolbar and canvas */
 section {
   background: rgb(46, 46, 46);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
+/* Toolbar styling */
 .toolbar {
-  width: 210px;
-  padding: 15px 22px 0;
+  width: 240px;  /* Increased width for better toolbar visibility */
+  padding: 20px;
+  background-color: rgb(51, 51, 51);  /* Darker toolbar background */
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6); /* Inner shadow effect */
 }
 
+/* Toolbar row and options styling */
 .row .options {
   list-style: none;
-  margin: 10px 0 0 5px;
+  padding: 0;
+  margin: 0;
 }
 
 .row .options .option {
   display: flex;
   cursor: pointer;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  transition: background-color 0.3s ease;
 }
 
-.option :where(span, label){
-  color: bisque;
-  padding-left: 10px;
+.row .options .option:hover {
+  background-color: rgb(60, 60, 60);  /* Slight hover effect for options */
+  border-radius: 4px;
 }
 
-.option #fill-color {
-  height: 14px;
-  width: 14px;
-}
-.option :is(:hover, .active) :where(span, label) {
-  color: aqua;
+.option span, .option label {
+  color: #B0B0B0;  /* Light gray for text color */
+  font-size: 14px;
+  margin-left: 10px;
 }
 
+.option input[type="checkbox"], .option input[type="range"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Hover effects for active options */
+.option:hover span, .option:hover label {
+  color: #00BFFF;  /* Blue color on hover */
+}
+
+/* Drawboard canvas container */
 .drawboard {
   flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background-color: rgb(22, 22, 22);  /* Dark background for the drawing area */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* Inner shadow for the canvas */
 }
 
-/* General button styling */
+/* Button Styles (General) */
 button {
   font-family: 'Arial', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 8px 18px;
+  border-radius: 6px;
   border: 2px solid transparent;
   cursor: pointer;
   outline: none;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  /* Subtle shadow for buttons */
+  background-color: rgb(55, 55, 55);  /* Base background for buttons */
+  color: #B0B0B0;  /* Light gray text color */
+  width: 100%;
+  margin-bottom: 15px;
 }
 
-/* Styling for the Clear button */
+/* Clear Button (Adobe-like red color) */
 .clear {
   background-color: transparent;
-  color: #FF4F4F;  /* Adobe-like red for the Clear button */
+  color: #FF4F4F;
   border-color: #FF4F4F;
 }
 
@@ -81,9 +120,10 @@ button {
   background-color: #e14b4b;
 }
 
+/* Save Image Button (Green color) */
 .save-img {
-  background-color: #4CAF50;  
-  color: white;
+  background-color: transparent;
+  color: #4CAF50;
   border-color: #4CAF50;
 }
 
@@ -96,12 +136,30 @@ button {
   background-color: #388e3c;
 }
 
+/* Focus Outline for Accessibility */
 button:focus {
-  outline: 3px solid #0078D4;  
+  outline: 3px solid #0078D4;  /* Light blue focus outline */
 }
 
-
-.drawboard canvas{
+/* Canvas Styling */
+.drawboard canvas {
   width: 100%;
   height: 100%;
+  border-radius: 8px;  /* Rounded canvas corners */
+  border: 2px solid rgb(80, 80, 80);  /* Border around canvas */
+  background-color: rgb(30, 30, 30);  /* Dark background for canvas */
+}
+
+/* Optional Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #666;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
 }
