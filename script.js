@@ -6,7 +6,7 @@ const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
 canvas.width = window.innerWidth - canvasOffsetX;
-canvas.Height = window.innerHeight - canvasOffsetY;
+canvas.height = window.innerHeight - canvasOffsetY;  //
 
 let isPainting = false;
 let lineWidth = 5;
@@ -20,37 +20,37 @@ toolbar.addEventListener('click', e => {
 });
 
 toolbar.addEventListener('change', e => {
-    if(e.target.id === 'stoke') {
+    if (e.target.id === 'stroke') {  
         ctx.strokeStyle = e.target.value;
     }
 
-    if(e.target.id === 'lineWith') {
-        lineWith = e.target.value;
+    if (e.target.id === 'lineWidth') {  
+        lineWidth = e.target.value;  
     }
 });
 
 const draw = (e) => {
-    if(!isPainting) {
+    if (!isPainting) {
         return;
     }
 
-    ctx.lineWidth = lineWidth
+    ctx.lineWidth = lineWidth;
     ctx.linecap = 'round';
 
     ctx.lineTo(e.clientX, e.clientY);
     ctx.stroke();
-}
+};
 
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
     startX = e.clientX;
     startY = e.clientY;
-}):
+});
 
 canvas.addEventListener('mouseup', (e) => {
     isPainting = false;
     ctx.stroke();
     ctx.beginPath();
-}):
+});
 
 canvas.addEventListener('mousemove', draw);

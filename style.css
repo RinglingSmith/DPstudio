@@ -22,9 +22,84 @@ section {
   padding: 15px 22px 0;
 }
 
+.row .options {
+  list-style: none;
+  margin: 10px 0 0 5px;
+}
+
+.row .options .option {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.option :where(span, label){
+  color: bisque;
+  padding-left: 10px;
+}
+
+.option #fill-color {
+  height: 14px;
+  width: 14px;
+}
+.option :is(:hover, .active) :where(span, label) {
+  color: aqua;
+}
+
 .drawboard {
   flex: 1;
 }
+
+/* General button styling */
+button {
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the Clear button */
+.clear {
+  background-color: transparent;
+  color: #FF4F4F;  /* Adobe-like red for the Clear button */
+  border-color: #FF4F4F;
+}
+
+.clear:hover {
+  background-color: #FF4F4F;
+  color: white;
+}
+
+.clear:active {
+  background-color: #e14b4b;
+}
+
+.save-img {
+  background-color: #4CAF50;  
+  color: white;
+  border-color: #4CAF50;
+}
+
+.save-img:hover {
+  background-color: #45a049;
+  border-color: #45a049;
+}
+
+.save-img:active {
+  background-color: #388e3c;
+}
+
+button:focus {
+  outline: 3px solid #0078D4;  
+}
+
 
 .drawboard canvas{
   width: 100%;
