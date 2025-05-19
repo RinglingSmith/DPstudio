@@ -2,11 +2,30 @@ const canvas = document.getElementById('drawboard');
 const ctx = canvas.getContext('2d');
 const toolbar = document.getElementById('toolbar');
 
-// Initial canvas setup
+// Off-screen canvas
+const drawingSurface = document.createElement('canvas');
+const surfaceCtx = drawingSurface.getContext('2d');
+
+// Initialize canvas
+function setupCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawingSurface.width = 3000;
+    drawingSurface.height = 3000;
+    surfaceCtx.fillStyle = "#ffffff";
+    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
+    drawSurface(); // Initial render
+}
+setupCanvas();
+window.addEventListener('resize', setupCanvas);
+
+// Drawing state
 let isPainting = false;
 let lastX = 0, lastY = 0;
 let lineWidth = 5;
 let brushColor = "#000";
+
+// Zoom and pan
 let scale = 1;
 let originX = 0;
 let originY = 0;
@@ -14,68 +33,37 @@ let isPanning = false;
 let startPanX = 0;
 let startPanY = 0;
 
-// Resize canvas on load and window resize
-function resizeCanvas() {
-    canvas.width = window.innerWidth - canvas.offsetLeft;
-    canvas.height = window.innerHeight - canvas.offsetTop;
-    ctx.fillStyle = '#ffffff';  // Set default background color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill background
+// Draw the visible canvas from the off-screen surface
+function drawSurface() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(scale, 0, 0, scale, originX, originY);
+    ctx.drawImage(drawingSurface, 0, 0);
 }
 
-// Set initial canvas size
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// Drawing function
+// Draw to the off-screen canvas
 function draw(e) {
     if (!isPainting) return;
 
-    const mouseX = (e.clientX - canvas.offsetLeft - originX) / scale;
-    const mouseY = (e.clientY - canvas.offsetTop - originY) / scale;
+    const x = (e.clientX - originX) / scale;
+    const y = (e.clientY - originY) / scale;
 
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = brushColor;
+    surfaceCtx.lineWidth = lineWidth;
+    surfaceCtx.lineCap = 'round';
+    surfaceCtx.strokeStyle = brushColor;
 
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);
-    ctx.stroke();
+    surfaceCtx.beginPath();
+    surfaceCtx.moveTo(lastX, lastY);
+    surfaceCtx.lineTo(x, y);
+    surfaceCtx.stroke();
 
-    lastX = mouseX;
-    lastY = mouseY;
+    lastX = x;
+    lastY = y;
+
+    drawSurface(); // Update visible canvas
 }
 
-// Redraw canvas for zoom and pan
-function redrawCanvas() {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);  // Reset the transform matrix
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.setTransform(scale, 0, 0, scale, originX, originY);
-
-    ctx.fillStyle = '#ffffff';  // Default background color
-    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
-}
-
-// Handle zoom with the mouse wheel
-canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-
-    const zoomFactor = 1.1;
-    const mouseX = e.offsetX;
-    const mouseY = e.offsetY;
-
-    const direction = e.deltaY < 0 ? 1 : -1;
-    const factor = Math.pow(zoomFactor, direction);
-
-    originX = mouseX - (mouseX - originX) * factor;
-    originY = mouseY - (mouseY - originY) * factor;
-
-    scale *= factor;
-    redrawCanvas();
-});
-
-// Handle panning
+// Mouse events
 canvas.addEventListener('mousedown', (e) => {
     if (e.button === 1 || e.ctrlKey) {
         isPanning = true;
@@ -83,20 +71,18 @@ canvas.addEventListener('mousedown', (e) => {
         startPanY = e.clientY;
     } else {
         isPainting = true;
-        lastX = (e.clientX - canvas.offsetLeft - originX) / scale;
-        lastY = (e.clientY - canvas.offsetTop - originY) / scale;
+        lastX = (e.clientX - originX) / scale;
+        lastY = (e.clientY - originY) / scale;
     }
 });
 
 canvas.addEventListener('mousemove', (e) => {
     if (isPanning) {
-        const dx = e.clientX - startPanX;
-        const dy = e.clientY - startPanY;
-        originX += dx;
-        originY += dy;
+        originX += (e.clientX - startPanX);
+        originY += (e.clientY - startPanY);
         startPanX = e.clientX;
         startPanY = e.clientY;
-        redrawCanvas();
+        drawSurface();
     } else {
         draw(e);
     }
@@ -107,68 +93,63 @@ canvas.addEventListener('mouseup', () => {
     isPanning = false;
 });
 
-// Change background color
-document.getElementById('bg-color-picker').addEventListener('input', (e) => {
-    const newColor = e.target.value;
-    canvas.style.backgroundColor = newColor;
-    ctx.fillStyle = newColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Refill background color
+canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const zoom = e.deltaY < 0 ? 1.1 : 0.9;
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    const x = (mouseX - originX) / scale;
+    const y = (mouseY - originY) / scale;
+
+    scale *= zoom;
+    originX = mouseX - x * scale;
+    originY = mouseY - y * scale;
+
+    drawSurface();
 });
 
-// Update brush color
+// Brush settings
 toolbar.addEventListener('change', (e) => {
     if (e.target.id === 'stroke') {
-        brushColor = e.target.value;  // Update brush color
+        brushColor = e.target.value;
     }
     if (e.target.id === 'size-slider') {
-        lineWidth = e.target.value;  // Update brush size
+        lineWidth = e.target.value;
     }
 });
 
-// Clear the canvas
+// Clear
 document.getElementById('clear').addEventListener('click', () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';  // Reset background color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    surfaceCtx.fillStyle = document.getElementById('bg-color-picker').value || "#ffffff";
+    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
+    drawSurface();
 });
 
-// Save canvas as an image
+// Save image
 document.querySelector('.save-img').addEventListener('click', () => {
-    const image = canvas.toDataURL();  // Convert canvas to image data
+    const image = drawingSurface.toDataURL();
     const link = document.createElement('a');
     link.href = image;
-    link.download = 'canvas-image.png';
+    link.download = 'canvas.png';
     link.click();
 });
 
-// Apply new canvas size
-const widthInput = document.getElementById('canvas-width');
-const heightInput = document.getElementById('canvas-height');
-const applySizeButton = document.getElementById('apply-size');
-
-applySizeButton.addEventListener('click', () => {
-    const newWidth = parseInt(widthInput.value);
-    const newHeight = parseInt(heightInput.value);
-
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCtx.drawImage(canvas, 0, 0);
-
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-
-    ctx.fillStyle = '#ffffff';  // Default background color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.drawImage(tempCanvas, 0, 0);
+// Background color
+document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+    const color = e.target.value;
+    // Fill only background (behind drawings)
+    surfaceCtx.globalCompositeOperation = 'destination-over';
+    surfaceCtx.fillStyle = color;
+    surfaceCtx.fillRect(0, 0, drawingSurface.width, drawingSurface.height);
+    surfaceCtx.globalCompositeOperation = 'source-over';
+    drawSurface();
 });
 
-// Reset zoom and pan
+// Reset view
 document.getElementById('reset-view').addEventListener('click', () => {
     scale = 1;
     originX = 0;
     originY = 0;
-    redrawCanvas();
+    drawSurface();
 });
