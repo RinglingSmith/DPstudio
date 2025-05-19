@@ -44,12 +44,20 @@ button:hover {
     background-color: #555;
 }
 
-canvas {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    display: block;  /* Make canvas block-level */
-    flex: 1;  /* Ensure canvas fills remaining space */
+/* Ensure the canvas fits within its container */
+.drawboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin: 0;
 }
+
+canvas {
+    border: 1px solid #000; /* Optional: adds a border to the canvas */
+    background-color: #fff; /* Optional: sets a white background */
+}
+
 
 input[type="color"] {
     width: 100%;
