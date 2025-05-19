@@ -6,20 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let brushColor = '#000';
   let lineWidth = 5;
   let isPainting = false;
-  let lastX, lastY;
+  let lastX = 0;
+  let lastY = 0;
 
-  // Get the drawboard section instead of missing #canvas-container
+  // Use drawboard section as canvas container
   const container = document.querySelector('.drawboard');
-
-  // Initial canvas setup
-  resizeCanvas();
-
-  // Window resize (preserve content)
-  window.addEventListener('resize', () => resizeCanvas(true));
 
   function resizeCanvas(preserveContent = false) {
     const containerRect = container.getBoundingClientRect();
-
     let tempCanvas, tempCtx;
 
     if (preserveContent) {
@@ -31,16 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     canvas.width = containerRect.width;
-    canvas.height = window.innerHeight - toolbar.offsetHeight;
+    canvas.height = containerRect.height;
 
-    // Draw background color to canvas pixels
     ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (preserveContent && tempCtx) {
+    if (preserveContent) {
       ctx.drawImage(tempCanvas, 0, 0);
     }
   }
+
+  // Initial setup
+  resizeCanvas();
+
+  window.addEventListener('resize', () => resizeCanvas(true));
 
   function draw(e) {
     if (!isPainting) return;
@@ -74,54 +72,36 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.beginPath();
   });
 
+  canvas.addEventListener('mouseleave', () => {
+    isPainting = false;
+    ctx.beginPath();
+  });
+
   canvas.addEventListener('mousemove', draw);
 
-  // Change stroke color
+  // Stroke color
   document.getElementById('stroke').addEventListener('input', (e) => {
     brushColor = e.target.value;
   });
 
-  // Change brush size
+  // Brush size
   document.getElementById('size-slider').addEventListener('input', (e) => {
     lineWidth = parseInt(e.target.value, 10);
     document.getElementById('size-value').textContent = lineWidth;
   });
 
-  // Change background color
+  // Background color
   document.getElementById('bg-color-picker').addEventListener('input', (e) => {
     const newColor = e.target.value;
     canvas.style.backgroundColor = newColor;
 
-    // Save existing drawing
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
     const tempCtx = tempCanvas.getContext('2d');
     tempCtx.drawImage(canvas, 0, 0);
 
-    // Fill new background
     ctx.fillStyle = newColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(tempCanvas, 0, 0);
-  });
-
-  // Apply manual canvas size
-  document.getElementById('apply-size').addEventListener('click', () => {
-    const width = parseInt(document.getElementById('canvas-width').value);
-    const height = parseInt(document.getElementById('canvas-height').value);
-
-    if (isNaN(width) || isNaN(height)) return;
-
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCtx.drawImage(canvas, 0, 0);
-
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(tempCanvas, 0, 0);
   });
@@ -141,4 +121,26 @@ document.addEventListener('DOMContentLoaded', () => {
     link.download = 'canvas-image.png';
     link.click();
   });
+
+  // Apply custom size
+  document.getElementById('apply-size').addEventListener('click', () => {
+    const width = parseInt(document.getElementById('canvas-width').value);
+    const height = parseInt(document.getElementById('canvas-height').value);
+
+    if (isNaN(width) || isNaN(height)) return;
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(canvas, 0, 0);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tempCanvas, 0, 0);
+  });
 });
+  
