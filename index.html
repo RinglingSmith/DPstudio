@@ -32,6 +32,16 @@
 
            <button id="eraser">Eraser</button>
 
+           <div class="controls">
+        <button onclick="addLayer()">Add Layer</button>
+        <button onclick="removeLayer()">Remove Active Layer</button>
+    </div>
+
+    <div id="layer-list">
+        <h3>Layers</h3>
+        <!-- Layer buttons will be dynamically generated here -->
+    </div>
+
        <script>
         let activeLayerIndex = null; // Active layer index
 
