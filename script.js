@@ -2,11 +2,11 @@ const canvas = document.getElementById('drawboard');
 const toolbar = document.getElementById('toolbar');
 const ctx = canvas.getContext('2d');
 
-const canvasOffsetX = canvas.offsetLeft;
-const canvasOffsetY = canvas.offsetTop;
+// Get the canvas offset relative to the page
+const canvasRect = canvas.getBoundingClientRect();
 
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+canvas.width = window.innerWidth - canvasRect.left;
+canvas.height = window.innerHeight - canvasRect.top;
 
 let isPainting = false;
 let lineWidth = 5;
@@ -19,6 +19,10 @@ const draw = (e) => {
         return;
     }
 
+    // Calculate mouse position relative to canvas
+    const mouseX = e.clientX - canvasRect.left;
+    const mouseY = e.clientY - canvasRect.top;
+
     ctx.lineWidth = lineWidth;
     ctx.linecap = 'round';
     ctx.strokeStyle = ctx.strokeStyle || "#000";  // Default color if not set
@@ -26,21 +30,21 @@ const draw = (e) => {
     // Using quadraticCurveTo for smoother curves between points
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);  // Start point of the curve
-    ctx.quadraticCurveTo(e.clientX, e.clientY, (lastX + e.clientX) / 2, (lastY + e.clientY) / 2);  // Control point and end point
+    ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);  // Control point and end point
     ctx.stroke();
 
     // Update lastX, lastY to current mouse position
-    lastX = e.clientX;
-    lastY = e.clientY;
+    lastX = mouseX;
+    lastY = mouseY;
 };
 
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    const mouseX = e.clientX - canvasRect.left;
+    const mouseY = e.clientY - canvasRect.top;
 
-    lastX = startX;
-    lastY = startY;
+    lastX = mouseX;
+    lastY = mouseY;
 });
 
 canvas.addEventListener('mouseup', () => {
@@ -68,6 +72,7 @@ toolbar.addEventListener('change', (e) => {
 });
 
 window.addEventListener('load', () => {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    const canvasRect = canvas.getBoundingClientRect();
+    canvas.width = canvasRect.width;
+    canvas.height = canvasRect.height;
 });
