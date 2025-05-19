@@ -1,69 +1,67 @@
-import javax.servlet.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+@WebServlet("/layers")
 public class LayerServlet extends HttpServlet {
 
-    private ArrayList<String> layers = new ArrayList<>();
+    private final ArrayList<String> layers = new ArrayList<>();
 
     @Override
-    public void init() throws ServletException {
-        // Initialize with one layer
+    public void init() {
         layers.add("Layer 1");
     }
 
-    // Do GET to retrieve the list of layers
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        out.println("{ \"layers\": " + layers.toString() + " }");
-    }
 
-    // Do POST to add a new layer
-    @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // Read the new layer name from the request
-    String layerName = request.getParameter("layerName");
-    if (layerName != null && !layerName.isEmpty()) {
-        layers.add(layerName);
-    }
+        out.println("<html><head><title>Layer Manager</title></head><body>");
+        out.println("<h1>Layers</h1>");
 
-    // Prepare the response
-    response.setContentType("application/json");
-    PrintWriter out = response.getWriter();
-
-    // Build valid JSON
-    StringBuilder json = new StringBuilder("{ \"layers\": [");
-    for (int i = 0; i < layers.size(); i++) {
-        json.append("\"").append(layers.get(i)).append("\"");
-        if (i < layers.size() - 1) {
-            json.append(",");
+        // Show current layers with remove buttons
+        out.println("<ul>");
+        for (int i = 0; i < layers.size(); i++) {
+            out.println("<li>" + layers.get(i) +
+                    "<form method='post' style='display:inline'>" +
+                    "<input type='hidden' name='removeIndex' value='" + i + "'/>" +
+                    "<input type='submit' value='Remove'/>" +
+                    "</form></li>");
         }
+        out.println("</ul>");
+
+        // Add layer form
+        out.println("<h2>Add New Layer</h2>");
+        out.println("<form method='post'>");
+        out.println("Layer Name: <input type='text' name='layerName' required/>");
+        out.println("<input type='submit' value='Add Layer'/>");
+        out.println("</form>");
+
+        out.println("</body></html>");
     }
-    json.append("] }");
 
-    // Send the response
-    out.println(json.toString());
-    out.flush();
-}
-
-
-    // Do DELETE to remove a layer by index
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int layerIndex = Integer.parseInt(request.getParameter("index"));
-            if (layerIndex >= 0 && layerIndex < layers.size()) {
-                layers.remove(layerIndex);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String layerName = request.getParameter("layerName");
+        String removeIndex = request.getParameter("removeIndex");
+
+        if (layerName != null && !layerName.isEmpty()) {
+            layers.add(layerName);
+        } else if (removeIndex != null) {
+            try {
+                int index = Integer.parseInt(removeIndex);
+                if (index >= 0 && index < layers.size()) {
+                    layers.remove(index);
+                }
+            } catch (NumberFormatException ignored) {
             }
-        } catch (NumberFormatException e) {
-            // Handle invalid index
         }
 
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        out.println("{ \"layers\": " + layers.toString() + " }");
+        // Redirect back to GET view
+        response.sendRedirect("layers");
     }
 }

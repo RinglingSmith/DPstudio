@@ -32,56 +32,10 @@
 
            <button id="eraser">Eraser</button>
 
-           <input type="text" id="layerName" placeholder="Layer name">
-    <button onclick="addLayer()">Add Layer</button>
-
-    <ul id="layerList"></ul>
-        <button onclick="removeLayer()">Remove Active Layer</button>
-    </div>
-
-    <div id="layer-list">
-        <h3>Layers</h3>
-        <!-- Layer buttons will be dynamically generated here -->
-    </div>
-
-       <script>
-        function loadLayers() {
-            fetch('LayerServlet')
-                .then(res => res.json())
-                .then(data => {
-                    const list = document.getElementById('layerList');
-                    list.innerHTML = '';
-                    data.layers.forEach((layer, index) => {
-                        const li = document.createElement('li');
-                        li.textContent = layer + ' ';
-                        const delBtn = document.createElement('button');
-                        delBtn.textContent = 'Delete';
-                        delBtn.onclick = () => removeLayer(index);
-                        li.appendChild(delBtn);
-                        list.appendChild(li);
-                    });
-                });
-        }
-
-        function addLayer() {
-            const name = document.getElementById('layerName').value;
-            const params = new URLSearchParams();
-            params.append('layerName', name);
-            fetch('LayerServlet', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString()
-            }).then(loadLayers);
-        }
-
-        function removeLayer(index) {
-            fetch('LayerServlet?index=' + index, {
-                method: 'DELETE'
-            }).then(loadLayers);
-        }
-
-        loadLayers();
-    </script>
+           <form action="layers" method="post">
+           <input type="text" name="layerName" />
+           <button type="submit">Add Layer</button>
+           </form>
 
           <div>
             <label for="canvasWidth">Width:</label>
@@ -102,7 +56,6 @@
     </div>
     </main>
 
-    <script src="layer.java"></script>
     <script src="paint.js"></script>
     <script src="canvasHeight.js"></script>
     <script src="zoom.js"></script>
