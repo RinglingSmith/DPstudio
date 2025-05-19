@@ -38,6 +38,14 @@ const draw = (e) => {
     lastY = mouseY;
 };
 
+// Event listener to change background color
+document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+    // Change the canvas background color based on the color picker value
+    canvas.style.backgroundColor = e.target.value;
+    ctx.fillStyle = e.target.value;
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas with the selected color
+});
+
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
     const mouseX = e.clientX - canvasRect.left;
