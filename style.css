@@ -4,16 +4,14 @@ body {
     padding: 0;
     background-color: #333;
     display: flex;
-    justify-content: center; /* Centering the body content */
+    justify-content: center; /* Center the body content */
     align-items: center; /* Vertically center */
     height: 100vh; /* Full viewport height */
 }
 
 .container {
     display: flex;
-    justify-content: space-between;
     width: 100%;
-    max-width: 100%; /* Prevent overflow */
     height: 100%;
 }
 
@@ -21,9 +19,9 @@ body {
     background-color: #2e2e2e;
     color: #fff;
     padding: 10px;
-    width: 250px;
+    width: 250px;  /* Fixed width for the toolbar */
     height: 100%;
-    overflow-y: auto; /* Allow scrolling if the toolbar gets too big */
+    overflow-y: auto;  /* Allow scrolling if the toolbar gets too big */
 }
 
 .toolbar .title {
@@ -49,11 +47,10 @@ button:hover {
 canvas {
     background-color: #fff;
     border: 1px solid #ccc;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    display: block;  /* Make canvas block-level */
+    flex: 1;  /* Ensure canvas fills remaining space */
+    height: 100%;  /* Make sure it stretches vertically */
+    max-width: 100%; /* Ensure canvas doesn't overflow */
 }
 
 input[type="color"] {
