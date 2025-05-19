@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const toolbar = document.getElementById('toolbar');
   const ctx = canvas.getContext('2d');
 
+  const history = [];
+  const maxHistory = 50; // Optional: limit the number of saved states
+
   let selectedTool = "brush";
   let brushColor = '#000';
   let lineWidth = 5;
@@ -84,6 +87,34 @@ document.addEventListener('DOMContentLoaded', () => {
   lastY = mouseY;
 }
 
+function saveState() {
+  if (history.length >= maxHistory) {
+    history.shift(); // Remove the oldest state if at max capacity
+  }
+  history.push(canvas.toDataURL());
+}
+
+function undo() {
+  if (history.length > 0) {
+    const imgData = history.pop();
+    const img = new Image();
+    img.src = imgData;
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    };
+  }
+}
+
+canvas.addEventListener('mouseup', () => {
+  isPainting = false;
+  ctx.beginPath();
+  saveState(); // Save after each stroke
+});
+
+
   // Mouse events
   canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
@@ -127,6 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     lineWidth = parseInt(e.target.value, 10);
     document.getElementById('size-value').textContent = lineWidth;
   });
+
+  document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+    e.preventDefault();
+    undo();
+  }
+});
 
   // Background color
   document.getElementById('bg-color-picker').addEventListener('input', (e) => {
