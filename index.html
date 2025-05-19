@@ -32,10 +32,12 @@
 
            <button id="eraser">Eraser</button>
 
-           <form action="layers" method="post">
-           <input type="text" name="layerName" />
-           <button type="submit">Add Layer</button>
-           </form>
+           <div class="layer-controls">
+    <button id="addLayerBtn">Add Layer</button>
+    <button id="removeLayerBtn">Remove Layer</button>
+    <button id="toggleLayerBtn">Toggle Layer Visibility</button>
+    <button id="mergeLayersBtn">Merge Layers</button>
+</div>
 
           <div>
             <label for="canvasWidth">Width:</label>
@@ -57,6 +59,7 @@
     </main>
 
     <script src="paint.js"></script>
+    <script src="layer.js"></script>
     <script src="canvasHeight.js"></script>
     <script src="zoom.js"></script>
 </body>
