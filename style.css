@@ -15,24 +15,34 @@ body {
   justify-content: flex-start;
 }
 
-h1 {
-  color: #f0f0f0;
-  margin-bottom: 20px;
-  font-size: 2em;
+/* ---------- Toolbar Styles (Left Side) ---------- */
+#toolbar {
+  background-color: #2c2c2c;
+  width: 220px; /* Wider toolbar for desktop */
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  overflow-y: auto;
 }
 
-/* ---------- Controls ---------- */
-#controls {
-  background-color: #2c2c2c;
-  padding: 15px 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
+#toolbar h1 {
+  color: #f0f0f0;
+  font-size: 1.5em;
   margin-bottom: 20px;
-  transition: all 0.3s ease-in-out;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 #controls label,
@@ -64,20 +74,19 @@ h1 {
   transform: scale(0.98);
 }
 
-/* ---------- Canvas ---------- */
+/* ---------- Canvas Area ---------- */
 #canvasWrapper {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    border: 1px solid #ccc;
-    margin-top: 20px;
+  margin-left: 240px; /* Adjusted to fit the left sidebar */
+  position: relative;
+  width: 800px;
+  height: 600px;
+  border: 1px solid #ccc;
 }
 
 canvas {
-    border: 1px dashed rgba(0,0,0,0.2); 
+  border: 1px dashed rgba(0,0,0,0.2); 
 }
 
-/* Layer List Styles */
 #layer-list {
   margin-top: 10px;
 }
@@ -86,69 +95,61 @@ canvas {
    margin-top: 5px;
 }
 
-/* ---------- Toolbar Styles ---------- */
-#toolbar {
-  background-color: #2c2c2c;
-  width: 100%;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
-
-#toolbar h1 {
-  color: #f0f0f0;
-  font-size: 1.5em;
-  margin-right: 30px;
-}
-
-#sidebar ul li:hover {
-  font-weight: bold;
-}
-
 /* ---------- Mobile Styles ---------- */
 @media screen and (max-width: 768px) {
+  /* Adjust body to have a vertical layout in mobile */
   body {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
   }
 
+  /* Toolbar becomes horizontal on mobile */
   #toolbar {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
     padding: 10px;
+    box-shadow: none;
+    overflow-x: scroll;
   }
 
   #controls {
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-  }
-
-  #controls label,
-  #controls select,
-  #controls input,
-  #controls button {
-    width: 100%;
-  }
-
-   h1 {
-    font-size: 1.5em;
-    margin-bottom: 15px;
+    flex-direction: row;
+    gap: 5px;
+    overflow-x: auto;
   }
 
   #canvasWrapper {
     width: 100%;
     margin-left: 0;
+    margin-top: 60px; /* Leave space for the toolbar */
   }
 
   canvas {
     width: 100%;
     height: 100%; 
+  }
+
+  /* Adjust canvas size for mobile */
+  canvas {
+    touch-action: none;
+  }
+
+  /* Hide the canvas and block the screen when the toolbar is at the top (mobile) */
+  #canvasWrapper {
+    display: none; /* Hide canvas */
+  }
+
+  /* Display Toggle Canvas Button on Mobile */
+  #toggleCanvasBtn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #5f5f5f;
+    color: white;
+    border: none;
+    cursor: pointer;
   }
 }
