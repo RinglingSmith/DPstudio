@@ -74,46 +74,26 @@ input[type="range"] {
 
 /* Styles for the Resize Dialog */
 .resize-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 20px;
-    display: none;  /* Hidden by default */
-    z-index: 1000;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2c2c2c;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  z-index: 10;
 }
 
 .resize-dialog input {
-    padding: 5px;
-    margin: 10px 0;
-    width: 100px;
+  margin: 5px 0;
+  padding: 5px;
+  width: 100px;
 }
 
-.resize-dialog button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-}
-
-.resize-dialog button:hover {
-    background-color: #45a049;
-}
-
-.resize-dialog button:focus {
-    outline: none;
-}
-
-.resize-dialog button#cancel-size {
-    background-color: #FF4F4F;
-}
-
-.resize-dialog button#cancel-size:hover {
-    background-color: #e14b4b;
+.dialog-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
 }

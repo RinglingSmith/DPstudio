@@ -37,7 +37,12 @@
         <div class="option">
           <button id="clear" class="clear">Clear</button>
           <button id="save" class="save-img">Save Image</button>
-          <button id="resize-canvas" class="resize-btn">Resize Canvas</button>
+          <label for="width-range">Width (px):</label>
+          <input type="number" id="width-range" min="300" value="800" /><br />
+          <label for="height-range">Height (px):</label>
+          <input type="number" id="height-range" min="300" value="600" /><br />
+          <div class="dialog-buttons">
+          <button id="apply-size">Apply</button>
         </div>
       </div>
 
@@ -52,18 +57,6 @@
     </section>
   </div>
 
-  <!-- Resize Dialog -->
-  <div id="resize-dialog" class="resize-dialog">
-    <h2>Resize Canvas</h2>
-    <label for="width-range">Width:</label>
-    <input type="number" id="width-range" min="300" value="800" /><br />
-    <label for="height-range">Height:</label>
-    <input type="number" id="height-range" min="300" value="600" /><br />
-    <button id="apply-size">Apply</button>
-    <button id="cancel-size">Cancel</button>
-  </div>
-
-  <!-- Scripts -->
   <script src="script.js"></script>
   <script src="size.js"></script>
 </body>
