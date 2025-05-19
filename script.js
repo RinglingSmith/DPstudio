@@ -2,60 +2,53 @@ const canvas = document.getElementById('drawboard');
 const toolbar = document.getElementById('toolbar');
 const ctx = canvas.getContext('2d');
 
-// Get the canvas offset relative to the page
-const canvasRect = canvas.getBoundingClientRect();
+// Resize the canvas on load and on window resize
+function resizeCanvas() {
+    canvas.width = window.innerWidth - canvas.offsetLeft;
+    canvas.height = window.innerHeight - canvas.offsetTop;
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Refill the background when resizing
+}
 
-// Set the canvas size to match the window size
-canvas.width = window.innerWidth - canvasRect.left;
-canvas.height = window.innerHeight - canvasRect.top;
+// Set initial canvas size
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
+// Variables for drawing
 let isPainting = false;
 let lineWidth = 5;
-let startX, startY;
 let lastX, lastY;
+let brushColor = "#000";  // Default brush color
 
-// Function to create smoother brush strokes
-const draw = (e) => {
-    if (!isPainting) {
-        return;
-    }
+// Function to handle the smooth brush drawing
+function draw(e) {
+    if (!isPainting) return;
 
-    // Adjust mouse coordinates based on the canvas position
-    const mouseX = e.clientX - canvasRect.left;
-    const mouseY = e.clientY - canvasRect.top;
+    // Get mouse position relative to the canvas
+    const mouseX = e.clientX - canvas.offsetLeft;
+    const mouseY = e.clientY - canvas.offsetTop;
 
+    // Set stroke properties
     ctx.lineWidth = lineWidth;
-    ctx.linecap = 'round';
-    ctx.strokeStyle = ctx.strokeStyle || "#000";  // Default color if not set
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = brushColor;
 
-    // Using quadraticCurveTo for smoother curves between points
+    // Create smooth lines using quadratic curve
     ctx.beginPath();
-    ctx.moveTo(lastX, lastY);  // Start point of the curve
-    ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);  // Control point and end point
+    ctx.moveTo(lastX, lastY);
+    ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);
     ctx.stroke();
 
-    // Update lastX, lastY to current mouse position
+    // Update last position
     lastX = mouseX;
     lastY = mouseY;
-};
+}
 
-// Event listener to change background color
-document.getElementById('bg-color-picker').addEventListener('input', (e) => {
-    // Change the canvas background color based on the color picker value
-    canvas.style.backgroundColor = e.target.value;
-    ctx.fillStyle = e.target.value;
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas with the selected color
-});
-
+// Mouse event listeners for painting
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
-
-    // Adjust mouse coordinates based on the canvas position
-    const mouseX = e.clientX - canvasRect.left;
-    const mouseY = e.clientY - canvasRect.top;
-
-    lastX = mouseX;
-    lastY = mouseY;
+    lastX = e.clientX - canvas.offsetLeft;
+    lastY = e.clientY - canvas.offsetTop;
 });
 
 canvas.addEventListener('mouseup', () => {
@@ -65,25 +58,37 @@ canvas.addEventListener('mouseup', () => {
 
 canvas.addEventListener('mousemove', draw);
 
-// Event listener for the toolbar actions
-toolbar.addEventListener('click', (e) => {
-    if (e.target.id === 'clear') {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+// Event listener for changing background color
+document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+    const newColor = e.target.value;
+    canvas.style.backgroundColor = newColor;
+    ctx.fillStyle = newColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill canvas with the new color
 });
 
+// Event listener for changing brush color from toolbar
 toolbar.addEventListener('change', (e) => {
     if (e.target.id === 'stroke') {
-        ctx.strokeStyle = e.target.value;
+        brushColor = e.target.value;  // Update the brush color
     }
 
-    if (e.target.id === 'lineWidth') {
-        lineWidth = e.target.value;
+    if (e.target.id === 'size-slider') {
+        lineWidth = e.target.value;  // Update the line width
     }
 });
 
-window.addEventListener('load', () => {
-    const canvasRect = canvas.getBoundingClientRect();
-    canvas.width = canvasRect.width;
-    canvas.height = canvasRect.height;
+// Event listener for clearing the canvas
+document.getElementById('clear').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';  // Reset background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+// Save canvas as image
+document.querySelector('.save-img').addEventListener('click', () => {
+    const image = canvas.toDataURL();  // Convert canvas to image data
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = 'canvas-image.png';
+    link.click();
 });

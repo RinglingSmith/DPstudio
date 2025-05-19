@@ -1,179 +1,58 @@
-/* General Body Styling */
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: rgb(40, 40, 40);  /* Dark background to resemble Adobe's UI */
-  margin: 0;
-  font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
 }
 
-/* Main container to hold toolbar and drawboard */
 .container {
-  display: flex;
-  width: 100%;
-  gap: 15px;
-  padding: 20px;
-  max-width: 1150px;
-  background-color: rgb(30, 30, 30);  /* Dark container background */
-  border-radius: 8px;  /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Subtle shadow for separation */
+    display: flex;
+    justify-content: space-between;
+    height: 100vh;
 }
 
-/* Section styling for toolbar and canvas */
-section {
-  background: rgb(46, 46, 46);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* Toolbar styling */
 .toolbar {
-  width: 240px;  /* Increased width for better toolbar visibility */
-  padding: 20px;
-  background-color: rgb(51, 51, 51);  /* Darker toolbar background */
-  border-radius: 8px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6); /* Inner shadow effect */
+    background-color: #2e2e2e;
+    color: #fff;
+    padding: 10px;
+    width: 250px;
+    height: 100%;
 }
 
-/* Toolbar row and options styling */
-.row .options {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.toolbar .title {
+    font-size: 18px;
 }
 
-.row .options .option {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-left: 8px;
-  transition: background-color 0.3s ease;
+.options {
+    margin: 10px 0;
 }
 
-.row .options .option:hover {
-  background-color: rgb(60, 60, 60);  /* Slight hover effect for options */
-  border-radius: 4px;
-}
-
-.option span, .option label {
-  color: #B0B0B0;  /* Light gray for text color */
-  font-size: 14px;
-  margin-left: 10px;
-}
-
-.option input[type="checkbox"], .option input[type="range"] {
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-/* Hover effects for active options */
-.option:hover span, .option:hover label {
-  color: #00BFFF;  /* Blue color on hover */
-}
-
-/* Drawboard canvas container */
-.drawboard {
-  flex: 1;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  background-color: rgb(22, 22, 22);  /* Dark background for the drawing area */
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* Inner shadow for the canvas */
-}
-
-/* Button Styles (General) */
 button {
-  font-family: 'Arial', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 8px 18px;
-  border-radius: 6px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  /* Subtle shadow for buttons */
-  background-color: rgb(55, 55, 55);  /* Base background for buttons */
-  color: #B0B0B0;  /* Light gray text color */
-  width: 100%;
-  margin-bottom: 15px;
+    padding: 10px;
+    background-color: #444;
+    border: 1px solid #555;
+    cursor: pointer;
+    width: 100%;
 }
 
-/* Clear Button (Adobe-like red color) */
-.clear {
-  background-color: transparent;
-  color: #FF4F4F;
-  border-color: #FF4F4F;
+button:hover {
+    background-color: #555;
 }
 
-.clear:hover {
-  background-color: #FF4F4F;
-  color: white;
+canvas {
+    background-color: #fff;
+    border: 1px solid #ccc;
 }
 
-.clear:active {
-  background-color: #e14b4b;
+input[type="color"] {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+    background-color: #333;
+    color: white;
+    border: none;
 }
 
-/* Save Image Button (Green color) */
-.save-img {
-  background-color: transparent;
-  color: #4CAF50;
-  border-color: #4CAF50;
-}
-
-.save-img:hover {
-  background-color: #45a049;
-  border-color: #45a049;
-}
-
-.save-img:active {
-  background-color: #388e3c;
-}
-
-/* Focus Outline for Accessibility */
-button:focus {
-  outline: 3px solid #0078D4;  /* Light blue focus outline */
-}
-
-/* Canvas Styling */
-.drawboard canvas {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;  /* Rounded canvas corners */
-  border: 2px solid rgb(80, 80, 80);  /* Border around canvas */
-  background-color: rgb(30, 30, 30);  /* Dark background for canvas */
-}
-
-/* Optional Scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #666;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #888;
-}
-
-#bg-color-picker {
-  width: 100%;
-  padding: 8px 10px;
-  margin-top: 10px;
-  border-radius: 4px;
-  background-color: #333;
-  border: none;
-  color: white;
-}
-
-#bg-color-picker:focus {
-  outline: none;
+input[type="range"] {
+    width: 100%;
 }
