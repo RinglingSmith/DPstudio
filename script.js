@@ -41,32 +41,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', () => resizeCanvas(true));
 
+  // Draw function
   function draw(e) {
-  if (!isPainting) return;
+    if (!isPainting) return;
 
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'round';
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
 
-  if (selectedTool === "brush" || selectedTool === "eraser") {
-    ctx.strokeStyle = selectedTool === "eraser"
-      ? document.getElementById('bg-color-picker').value || '#ffffff'
-      : brushColor;
+    if (selectedTool === "brush") {
+      // Regular brush
+      ctx.strokeStyle = brushColor;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(mouseX, mouseY);
+      ctx.stroke();
+    } else if (selectedTool === "eraser") {
+      // Eraser
+      ctx.strokeStyle = document.getElementById('bg-color-picker').value || '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(mouseX, mouseY);
+      ctx.stroke();
+    } else if (selectedTool === "airbrush") {
+      // Airbrush effect: multiple small dots in random positions
+      const dotCount = 10; // Number of dots for each stroke
+      for (let i = 0; i < dotCount; i++) {
+        const offsetX = Math.random() * 10 - 5; // Random x offset
+        const offsetY = Math.random() * 10 - 5; // Random y offset
 
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(mouseX, mouseY);
-    ctx.stroke();
+        ctx.fillStyle = brushColor;
+        ctx.beginPath();
+        ctx.arc(mouseX + offsetX, mouseY + offsetY, lineWidth / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
     lastX = mouseX;
     lastY = mouseY;
   }
-}
 
-
+  // Mouse events
   canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
     const rect = canvas.getBoundingClientRect();
@@ -86,14 +104,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   canvas.addEventListener('mousemove', draw);
 
+  // Tool selection
   document.getElementById('brush').addEventListener('click', () => {
-  selectedTool = "brush";
-});
+    selectedTool = "brush";
+  });
 
-document.getElementById('eraser').addEventListener('click', () => {
-  selectedTool = "eraser";
-});
+  document.getElementById('eraser').addEventListener('click', () => {
+    selectedTool = "eraser";
+  });
 
+  document.getElementById('airbrush').addEventListener('click', () => {
+    selectedTool = "airbrush";
+  });
 
   // Stroke color
   document.getElementById('stroke').addEventListener('input', (e) => {
@@ -136,10 +158,6 @@ document.getElementById('eraser').addEventListener('click', () => {
     link.href = image;
     link.download = 'canvas-image.png';
     link.click();
-  });
-
-    document.getElementById('eraser').addEventListener('click', () => {
-    isEraser = true;
   });
 
   // Apply custom size
