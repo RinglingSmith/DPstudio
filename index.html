@@ -62,6 +62,24 @@
     </section>
   </div>
 
+ <script src="canvas.js"></script>
+<script>
+  // Create a canvas object and manipulate layers using JavaScript
+  Module.onRuntimeInitialized = function() {
+    const canvas = new Module.Canvas(800, 600);
+
+    // Create a new layer
+    canvas.createLayer(800, 600);
+
+    // Draw on the first layer at (10, 10) with color value 255 (white)
+    canvas.drawOnLayer(0, 10, 10, 255);
+
+    // Print the canvas details to the console
+    canvas.printCanvas();
+  };
+</script>
+
+
   <script src="script.js"></script>
   <script src="zoom.js"></script>
 </body>
