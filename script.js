@@ -26,30 +26,39 @@ let originY = 0;         // Pan Y offset
 let isPanning = false;
 let startPanX, startPanY;
 
-
 // Function to handle the smooth brush drawing
 function draw(e) {
     if (!isPainting) return;
 
-    // Get mouse position relative to the canvas
-    const mouseX = e.clientX - canvas.offsetLeft;
-    const mouseY = e.clientY - canvas.offsetTop;
+    const mouseX = (e.clientX - canvas.offsetLeft - originX) / scale;
+    const mouseY = (e.clientY - canvas.offsetTop - originY) / scale;
 
-    // Set stroke properties
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
     ctx.strokeStyle = brushColor;
 
-    // Create smooth lines using quadratic curve
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.quadraticCurveTo(mouseX, mouseY, (lastX + mouseX) / 2, (lastY + mouseY) / 2);
     ctx.stroke();
 
-    // Update last position
     lastX = mouseX;
     lastY = mouseY;
 }
+
+function redrawCanvas() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.setTransform(scale, 0, 0, scale, originX, originY);
+
+    // Redraw background
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+
+    // Optionally redraw shapes, layers, etc., here if you track them separately
+}
+
 
 const widthInput = document.getElementById('canvas-width');
 const heightInput = document.getElementById('canvas-height');
@@ -95,6 +104,38 @@ canvas.addEventListener('wheel', (e) => {
     scale *= factor;
     redrawCanvas();
 });
+
+canvas.addEventListener('mousedown', (e) => {
+    if (e.button === 1 || e.ctrlKey) { // Middle click or Ctrl+Left
+        isPanning = true;
+        startPanX = e.clientX;
+        startPanY = e.clientY;
+    } else {
+        isPainting = true;
+        lastX = (e.clientX - canvas.offsetLeft - originX) / scale;
+        lastY = (e.clientY - canvas.offsetTop - originY) / scale;
+    }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    if (isPanning) {
+        const dx = e.clientX - startPanX;
+        const dy = e.clientY - startPanY;
+        originX += dx;
+        originY += dy;
+        startPanX = e.clientX;
+        startPanY = e.clientY;
+        redrawCanvas();
+    } else {
+        draw(e);
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    isPainting = false;
+    isPanning = false;
+});
+
 
 // Mouse event listeners for painting
 canvas.addEventListener('mousedown', (e) => {
