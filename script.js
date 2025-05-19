@@ -29,6 +29,11 @@ toolbar.addEventListener('change', e => {
     }
 });
 
+window.addEventListener("load", () => {
+    canvas.width = canvas.offsetWitdh;
+    canvas.height = canvas.offsetHeight;
+});
+
 const draw = (e) => {
     if (!isPainting) {
         return;
