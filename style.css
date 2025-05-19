@@ -86,6 +86,16 @@ canvas {
   pointer-events: none;
 }
 
+#layerList li {
+  cursor: pointer;
+  margin: 5px 0;
+}
+
+#layerList li.active {
+  font-weight: bold;
+  color: blue;
+}
+
 /* ---------- Sidebar (Desktop) ---------- */
 #sidebar {
   width: 250px;
