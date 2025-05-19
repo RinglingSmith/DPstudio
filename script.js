@@ -1,33 +1,32 @@
 const canvas = document.getElementById('drawboard');
-const toolbar = document.getElementById('toolbar');
 const ctx = canvas.getContext('2d');
+const toolbar = document.getElementById('toolbar');
 
-// Resize the canvas on load and on window resize
+// Initial canvas setup
+let isPainting = false;
+let lastX = 0, lastY = 0;
+let lineWidth = 5;
+let brushColor = "#000";
+let scale = 1;
+let originX = 0;
+let originY = 0;
+let isPanning = false;
+let startPanX = 0;
+let startPanY = 0;
+
+// Resize canvas on load and window resize
 function resizeCanvas() {
     canvas.width = window.innerWidth - canvas.offsetLeft;
     canvas.height = window.innerHeight - canvas.offsetTop;
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ffffff';  // Set default background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill background
 }
 
 // Set initial canvas size
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Drawing state
-let isPainting = false;
-let lineWidth = 5;
-let lastX, lastY;
-let brushColor = "#000";
-
-// Zoom & Pan state
-let scale = 1;
-let originX = 0;
-let originY = 0;
-let isPanning = false;
-let startPanX, startPanY;
-
-// Handle drawing
+// Drawing function
 function draw(e) {
     if (!isPainting) return;
 
@@ -47,20 +46,18 @@ function draw(e) {
     lastY = mouseY;
 }
 
-// Redraw canvas for zoom/pan
+// Redraw canvas for zoom and pan
 function redrawCanvas() {
-    ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
+    ctx.setTransform(1, 0, 0, 1, 0, 0);  // Reset the transform matrix
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.setTransform(scale, 0, 0, scale, originX, originY);
 
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillStyle = '#ffffff';  // Default background color
     ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
-
-    // Note: If you store strokes, redraw them here.
 }
 
-// Zoom on mouse wheel
+// Handle zoom with the mouse wheel
 canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
 
@@ -78,7 +75,7 @@ canvas.addEventListener('wheel', (e) => {
     redrawCanvas();
 });
 
-// Pan and draw logic
+// Handle panning
 canvas.addEventListener('mousedown', (e) => {
     if (e.button === 1 || e.ctrlKey) {
         isPanning = true;
@@ -110,7 +107,41 @@ canvas.addEventListener('mouseup', () => {
     isPanning = false;
 });
 
-// Canvas size changer
+// Change background color
+document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+    const newColor = e.target.value;
+    canvas.style.backgroundColor = newColor;
+    ctx.fillStyle = newColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // Refill background color
+});
+
+// Update brush color
+toolbar.addEventListener('change', (e) => {
+    if (e.target.id === 'stroke') {
+        brushColor = e.target.value;  // Update brush color
+    }
+    if (e.target.id === 'size-slider') {
+        lineWidth = e.target.value;  // Update brush size
+    }
+});
+
+// Clear the canvas
+document.getElementById('clear').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';  // Reset background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+// Save canvas as an image
+document.querySelector('.save-img').addEventListener('click', () => {
+    const image = canvas.toDataURL();  // Convert canvas to image data
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = 'canvas-image.png';
+    link.click();
+});
+
+// Apply new canvas size
 const widthInput = document.getElementById('canvas-width');
 const heightInput = document.getElementById('canvas-height');
 const applySizeButton = document.getElementById('apply-size');
@@ -128,53 +159,16 @@ applySizeButton.addEventListener('click', () => {
     canvas.width = newWidth;
     canvas.height = newHeight;
 
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillStyle = '#ffffff';  // Default background color
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.drawImage(tempCanvas, 0, 0);
 });
 
-// Change background color
-document.getElementById('bg-color-picker').addEventListener('input', (e) => {
-    const newColor = e.target.value;
-    canvas.style.backgroundColor = newColor;
-    ctx.fillStyle = newColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-});
-
-// Brush settings
-toolbar.addEventListener('change', (e) => {
-    if (e.target.id === 'stroke') {
-        brushColor = e.target.value;
-    }
-    if (e.target.id === 'size-slider') {
-        lineWidth = e.target.value;
-    }
-});
-
-// Clear canvas
-document.getElementById('clear').addEventListener('click', () => {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-});
-
-// Save image
-document.querySelector('.save-img').addEventListener('click', () => {
-    const image = canvas.toDataURL();
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = 'canvas-image.png';
-    link.click();
-});
-
-// Reset view (zoom & pan)
+// Reset zoom and pan
 document.getElementById('reset-view').addEventListener('click', () => {
     scale = 1;
     originX = 0;
     originY = 0;
     redrawCanvas();
-});
-
 });
