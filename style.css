@@ -79,21 +79,11 @@ canvas {
   margin-left: 270px; 
 }
 
-.layerCanvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
 #layerList li {
   cursor: pointer;
-  margin: 5px 0;
-}
-
-#layerList li.active {
-  font-weight: bold;
-  color: blue;
+  background: #eee;
+  padding: 4px;
+  margin-bottom: 2px;
 }
 
 /* ---------- Sidebar (Desktop) ---------- */
