@@ -71,25 +71,50 @@
     </section>
   </div>
 
- <script src="canvas.js"></script>
-<script>
-  // Create a canvas object and manipulate layers using JavaScript
-  Module.onRuntimeInitialized = function() {
-    const canvas = new Module.Canvas(800, 600);
-
-    // Create a new layer
-    canvas.createLayer(800, 600);
-
-    // Draw on the first layer at (10, 10) with color value 255 (white)
-    canvas.drawOnLayer(0, 10, 10, 255);
-
-    // Print the canvas details to the console
-    canvas.printCanvas();
-  };
-</script>
-
-
   <script src="script.js"></script>
   <script src="zoom.js"></script>
+
+  <script>
+    // Load the compiled WASM
+    const Module = require('./canvas.js'); // Import the canvas.js generated from C++
+
+    let currentLayerIndex = 0;  // Keep track of the current layer index
+
+    Module.onRuntimeInitialized = function() {
+      const canvas = new Module.Canvas(800, 600);  // Create a 800x600 canvas
+
+      // Create the first layer automatically
+      canvas.createLayer(800, 600);  // First layer
+      document.getElementById('current-layer').innerText = currentLayerIndex;
+
+      // Button to create new layer
+      document.getElementById('create-layer').addEventListener('click', () => {
+        currentLayerIndex++;
+        const layerWidth = 800;  // Width for the new layer
+        const layerHeight = 600; // Height for the new layer
+
+        // Create a new layer with the specified width and height
+        canvas.createLayer(layerWidth, layerHeight);
+        document.getElementById('current-layer').innerText = currentLayerIndex;
+        console.log(`Layer ${currentLayerIndex} created`);
+      });
+
+      // Button to remove the current layer
+      document.getElementById('remove-layer').addEventListener('click', () => {
+        if (currentLayerIndex > 0) {
+          canvas.removeLayer(currentLayerIndex);  // Call the remove layer function
+          currentLayerIndex--;
+          document.getElementById('current-layer').innerText = currentLayerIndex;
+          console.log(`Layer ${currentLayerIndex + 1} removed`);
+        }
+      });
+
+      // Example: Draw on the current layer
+      document.getElementById('brush').addEventListener('click', () => {
+        // Drawing on the current layer (can be customized based on your tool)
+        canvas.drawOnLayer(currentLayerIndex, 100, 100, 255);  // Draw a white pixel on the current layer
+      });
+    };
+  </script>
 </body>
 </html>
