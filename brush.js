@@ -5,7 +5,24 @@ let brushSize = 5;
 let brushColor = '#000000';
 let brushType = 'round';
 
-// Function to start painting
+const canvas = document.getElementById('paintCanvas');
+const ctx = canvas?.getContext('2d');
+
+// Ensure context is available
+if (!canvas || !ctx) {
+    throw new Error("Canvas or context not found.");
+}
+
+// Function to get mouse position relative to the canvas
+function getMousePos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (evt.clientX - rect.left) / window.devicePixelRatio,
+        y: (evt.clientY - rect.top) / window.devicePixelRatio
+    };
+}
+
+// Function to start drawing
 function startPaint(evt) {
     painting = true;
     const pos = getMousePos(evt);
@@ -13,32 +30,23 @@ function startPaint(evt) {
     ctx.moveTo(pos.x, pos.y);
 }
 
-// Function to stop painting
+// Function to stop drawing
 function endPaint() {
     if (!painting) return;
     painting = false;
     ctx.closePath();
-
-    if (historyStep < history.length - 1) {
-        history = history.slice(0, historyStep + 1);
-    }
-
-    history.push(canvas.toDataURL());
-    historyStep++;
 }
 
-// Function to draw on canvas
+// Function to draw with the brush
 function draw(evt) {
     if (!painting) return;
 
     const pos = getMousePos(evt);
     ctx.lineWidth = brushSize;
+    ctx.strokeStyle = brushColor;
+    ctx.fillStyle = brushColor;
     ctx.globalAlpha = 1.0;
-    ctx.globalCompositeOperation = brushType === 'eraser' ? 'destination-out' : 'source-over';
-    ctx.strokeStyle = brushType === 'eraser' ? 'rgba(0,0,0,1)' : brushColor;
-    ctx.fillStyle = ctx.strokeStyle;
 
-    // Brush types logic (round, square, eraser, etc.)
     switch (brushType) {
         case 'round':
         case 'square':
@@ -52,67 +60,49 @@ function draw(evt) {
             ctx.moveTo(pos.x, pos.y);
             break;
         }
-        case 'spray':
-        case 'fuzzy': {
-            const dotSize = brushType === 'fuzzy' ? 0.8 : 1;
-            const count = brushType === 'fuzzy' ? 20 : 20;
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * 2 * Math.PI;
-                const radius = Math.random() * brushSize;
-                const x = pos.x + radius * Math.cos(angle);
-                const y = pos.y + radius * Math.sin(angle);
-                ctx.beginPath();
-                ctx.arc(x, y, dotSize, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-            break;
-        }
-        case 'pixel': {
-            ctx.fillRect(pos.x, pos.y, brushSize, brushSize);
-            break;
-        }
-        // Additional brush types as needed
         default:
-            console.warn(`Unknown brush type: ${brushType}`);
+            break;
     }
 }
 
-// Undo function
-function undo() {
-    if (historyStep > 0) {
-        historyStep--;
-        const img = new Image();
-        img.src = history[historyStep];
-        img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-        };
-    }
-}
+// Event listeners for mouse/touch interaction
+canvas.addEventListener('mousedown', startPaint);
+canvas.addEventListener('mouseup', endPaint);
+canvas.addEventListener('mouseout', endPaint);
+canvas.addEventListener('mousemove', draw);
 
-// UI controls for brush settings
-document.getElementById('colorPicker').addEventListener('input', e => {
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startPaint(e.touches[0]);
+});
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    draw(e.touches[0]);
+});
+canvas.addEventListener('touchend', endPaint);
+canvas.addEventListener('touchcancel', endPaint);
+
+// UI Controls for brush size, color, and type
+document.getElementById('colorPicker').addEventListener('input', (e) => {
     brushColor = e.target.value;
 });
 
-document.getElementById('brushSize').addEventListener('input', e => {
+document.getElementById('brushSize').addEventListener('input', (e) => {
     brushSize = parseInt(e.target.value, 10);
     ctx.lineWidth = brushSize;
 });
 
-document.getElementById('brushType').addEventListener('change', e => {
+document.getElementById('brushType').addEventListener('change', (e) => {
     brushType = e.target.value;
     ctx.lineWidth = brushSize;
 });
 
-document.getElementById('eraser').addEventListener('click', () => {
-    brushType = (brushType === 'eraser') ? 'round' : 'eraser';
-    const brushTypeSelector = document.getElementById('brushType');
-    brushTypeSelector.value = brushType;
-    brushTypeSelector.dispatchEvent(new Event('change'));
+// Clear the canvas
+document.getElementById('clearBtn').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-// Save the drawing as PNG or JPG
+// Save PNG or JPG
 document.getElementById('savePngBtn').addEventListener('click', () => {
     const dataURL = canvas.toDataURL('image/png');
     const a = document.createElement('a');
@@ -129,15 +119,10 @@ document.getElementById('saveJpgBtn').addEventListener('click', () => {
     a.click();
 });
 
-// Clear the canvas
-document.getElementById('clearBtn').addEventListener('click', () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-// Keyboard shortcut for undo (Ctrl/Cmd + Z)
-document.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        undo();
-    }
+// Eraser toggle
+document.getElementById('eraser').addEventListener('click', () => {
+    brushType = brushType === 'eraser' ? 'round' : 'eraser';
+    const brushTypeSelector = document.getElementById('brushType');
+    brushTypeSelector.value = brushType;
+    brushTypeSelector.dispatchEvent(new Event('change'));
 });
