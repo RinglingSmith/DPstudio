@@ -1,7 +1,10 @@
 // Get references to the canvas and size controls
 const canvas = document.getElementById('drawboard');
 const ctx = canvas.getContext('2d');
-
+const resizeButton = document.getElementById('resize-canvas');
+const resizeDialog = document.getElementById('resize-dialog');
+const applyButton = document.getElementById('apply-size');
+const cancelButton = document.getElementById('cancel-size');
 const widthInput = document.getElementById('width-range');
 const heightInput = document.getElementById('height-range');
 
@@ -21,10 +24,23 @@ function resizeCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill canvas with color
 }
 
-// Event listeners to update the canvas size when input fields are changed
-widthInput.addEventListener('input', resizeCanvas);
-heightInput.addEventListener('input', resizeCanvas);
+// Event listener to show the resize dialog when the button is clicked
+resizeButton.addEventListener('click', () => {
+    // Pre-fill the input fields with the current canvas dimensions
+    widthInput.value = canvas.width;
+    heightInput.value = canvas.height;
 
-// Initial resize of canvas to match window size
-resizeCanvas();
+    // Show the resize dialog
+    resizeDialog.style.display = 'block';
+});
 
+// Event listener for applying the new size
+applyButton.addEventListener('click', () => {
+    resizeCanvas();
+    resizeDialog.style.display = 'none';  // Hide the dialog after applying size
+});
+
+// Event listener for canceling the resize
+cancelButton.addEventListener('click', () => {
+    resizeDialog.style.display = 'none';  // Hide the dialog without changing the canvas size
+});
