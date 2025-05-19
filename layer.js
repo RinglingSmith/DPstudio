@@ -1,5 +1,6 @@
-let currentLayerId = 1;
 let layerCount = 1;
+const activeCanvas = document.getElementById('paintCanvas');
+const ctx = activeCanvas.getContext('2d');
 
 const canvasWrapper = document.getElementById('canvasWrapper');
 const layerList = document.getElementById('layerList');
