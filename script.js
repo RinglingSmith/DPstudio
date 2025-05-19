@@ -7,32 +7,6 @@ let lineWidth = 5;
 let isPainting = false;
 let lastX, lastY;
 
-// Resize the canvas using container width
-function resizeCanvas(preserveContent = false) {
-    const container = document.getElementById('canvas-container');
-    const containerRect = container.getBoundingClientRect();
-
-    let tempCanvas, tempCtx;
-
-    if (preserveContent) {
-        tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvas.width;
-        tempCanvas.height = canvas.height;
-        tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(canvas, 0, 0);
-    }
-
-    canvas.width = containerRect.width;
-    canvas.height = window.innerHeight - toolbar.offsetHeight;
-
-    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (preserveContent) {
-        ctx.drawImage(tempCanvas, 0, 0);
-    }
-}
-
 // Initial setup
 resizeCanvas();
 
@@ -58,6 +32,33 @@ function draw(e) {
 
     lastX = mouseX;
     lastY = mouseY;
+}
+
+
+// Resize the canvas using container width
+function resizeCanvas(preserveContent = false) {
+    const container = document.getElementById('canvas-container');
+    const containerRect = container.getBoundingClientRect();
+
+    let tempCanvas, tempCtx;
+
+    if (preserveContent) {
+        tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0);
+    }
+
+    canvas.width = containerRect.width;
+    canvas.height = window.innerHeight - toolbar.offsetHeight;
+
+    ctx.fillStyle = canvas.style.backgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (preserveContent) {
+        ctx.drawImage(tempCanvas, 0, 0);
+    }
 }
 
 // Mouse events
