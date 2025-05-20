@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctx = canvas.getContext('2d');
 
   const history = [];
-  const maxHistory = -1; // Optional: limit the number of saved states
+  const maxHistory = 50; // Optional: limit the number of saved states
 
   let selectedTool = "brush";
   let brushColor = '#000';
