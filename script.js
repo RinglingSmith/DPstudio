@@ -54,7 +54,7 @@ window.addEventListener('load', () => {
 });
 
 // example usage inside script.js
-const container = document.getElementById('canvasContainer');
+const container = document.getElementById('myCanvas');
 
 document.getElementById('resizeBtn').addEventListener('click', () => {
   const width = parseInt(document.getElementById('widthInput').value, 10);
