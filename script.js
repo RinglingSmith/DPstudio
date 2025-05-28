@@ -1,11 +1,11 @@
-// script.js - main initialization and event hookup
-
 window.addEventListener('load', () => {
   const container = document.getElementById('canvasContainer');
   const layerManager = new LayerManager(container);
   const historyManager = new HistoryManager(layerManager);
   const toolManager = new ToolManager(layerManager, historyManager);
-  const canvasController = new CanvasController(layerManager);
+
+  // Pass a function returning whether drawing is active
+  const canvasController = new CanvasController(layerManager, () => toolManager.drawing);
 
   // Start with one layer
   layerManager.addLayer('Layer 1');

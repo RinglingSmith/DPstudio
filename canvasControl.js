@@ -1,8 +1,9 @@
 // canvasControl.js - zoom and pan, pointer helpers
 
 class CanvasController {
-  constructor(layerManager) {
+  constructor(layerManager, isDrawingFunc) {
     this.layerManager = layerManager;
+    this.isDrawingFunc = isDrawingFunc;  // function to check if currently drawing
     this.scale = 1;
     this.offsetX = 0;
     this.offsetY = 0;
@@ -63,6 +64,7 @@ class CanvasController {
 
   startPan(e) {
     if (e.button !== 0) return;
+    if (this.isDrawingFunc && this.isDrawingFunc()) return;  // block pan if drawing
     this.isPanning = true;
     this.startPanX = e.clientX - this.offsetX;
     this.startPanY = e.clientY - this.offsetY;
@@ -70,6 +72,7 @@ class CanvasController {
 
   pan(e) {
     if (!this.isPanning) return;
+    if (this.isDrawingFunc && this.isDrawingFunc()) return;  // block pan if drawing
     this.offsetX = e.clientX - this.startPanX;
     this.offsetY = e.clientY - this.startPanY;
     this.updateTransforms();
@@ -81,6 +84,8 @@ class CanvasController {
 
   // Touch handlers for pan and pinch zoom
   touchStart(e) {
+    if (this.isDrawingFunc && this.isDrawingFunc()) return; // block pan if drawing
+
     if (e.touches.length === 1) {
       this.isTouchPanning = true;
       this.startPanX = e.touches[0].clientX - this.offsetX;
