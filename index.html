@@ -21,6 +21,14 @@
     <select id="layerSelect" title="Select Layer"></select>
     <button id="addLayer" title="Add Layer">+</button>
     <button id="delLayer" title="Delete Layer">-</button>
+
+    <label for="widthInput">Width:</label>
+    <input id="widthInput" type="number" value="800" min="100" max="2000" />
+    
+    <label for="heightInput">Height:</label>
+    <input id="heightInput" type="number" value="600" min="100" max="2000" />
+
+    <button id="resizeBtn">Resize Canvas</button>
   </div>
 
   <div id="canvasContainer">
@@ -28,6 +36,7 @@
   </div>
 
   <script src="layers.js"></script>
+  <script src="size.js"></script>
   <script src="history.js"></script>
   <script src="tools.js"></script>
   <script src="canvasControl.js"></script>

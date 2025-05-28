@@ -52,3 +52,13 @@ window.addEventListener('load', () => {
   // Save initial state
   historyManager.saveState();
 });
+
+// example usage inside script.js
+const container = document.getElementById('canvasContainer');
+
+document.getElementById('resizeBtn').addEventListener('click', () => {
+  const width = parseInt(document.getElementById('widthInput').value, 10);
+  const height = parseInt(document.getElementById('heightInput').value, 10);
+  changeCanvasSize(container, layerManager, canvasController, width, height);
+  historyManager.saveState();
+});
