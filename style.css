@@ -31,7 +31,7 @@ html, body {
   position: relative;
   width: 100vw;
   height: calc(100vh - 50px);
-  background: #fff;
+  background: #555;
   overflow: hidden;
 }
 canvas {
