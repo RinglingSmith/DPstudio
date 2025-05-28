@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>DP Studio</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DP Studio - Pro Drawing App</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="toolbar">
-    <button id="brush" class="tool active" title="Brush">🖌️</button>
-    <button id="eraser" class="tool" title="Eraser">🩹</button>
-    <button id="fill" class="tool" title="Fill">🪣</button>
-    <button id="rect" class="tool" title="Rectangle">▭</button>
-    <button id="circle" class="tool" title="Circle">⚪</button>
-    
-    <input type="color" id="colorPicker" title="Pick Color" value="#000000">
-    
-    <label for="brushSize">Size:</label>
-    <input type="range" id="brushSize" min="1" max="50" value="5">
-
-    <button id="undo" title="Undo">↩️</button>
-    <button id="redo" title="Redo">↪️</button>
-    <button id="save" title="Save">💾</button>
+    <button id="brush" class="tool active" title="Brush">Brush</button>
+    <button id="eraser" class="tool" title="Eraser">Eraser</button>
+    <button id="fill" class="tool" title="Fill">Fill</button>
+    <button id="rect" class="tool" title="Rectangle">Rect</button>
+    <button id="circle" class="tool" title="Circle">Circle</button>
+    <button id="undo" title="Undo" disabled>Undo</button>
+    <button id="redo" title="Redo" disabled>Redo</button>
+    <button id="save" title="Save Image">Save</button>
+    <input type="color" id="colorPicker" title="Pick color" value="#000000" />
+    <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush size" />
+    <select id="layerSelect" title="Select Layer"></select>
+    <button id="addLayer" title="Add Layer">+</button>
+    <button id="delLayer" title="Delete Layer">-</button>
   </div>
-  <canvas id="myCanvas"></canvas>
+
+  <div id="canvasContainer">
+    <canvas id="myCanvas"></canvas>
+  </div>
+
+  <script src="layers.js"></script>
+  <script src="history.js"></script>
+  <script src="tools.js"></script>
+  <script src="canvasControl.js"></script>
+  <script src="ui.js"></script>
+  <script src="export.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

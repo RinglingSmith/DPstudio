@@ -1,56 +1,42 @@
-/* style.css */
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #f0f0f0;
-  display: flex;
-  height: 100vh;
+html, body {
+  margin: 0; padding: 0; height: 100%; overflow: hidden;
+  font-family: Arial, sans-serif;
   user-select: none;
 }
-
 #toolbar {
-  background: #333;
-  color: white;
   display: flex;
-  flex-direction: column;
-  padding: 10px;
-  width: 60px;
-  box-sizing: border-box;
-}
-
-#toolbar button, #toolbar input[type="color"], #toolbar input[type="range"] {
-  margin: 8px 0;
-  cursor: pointer;
-  border: none;
-  background: none;
+  flex-wrap: wrap;
+  background: #333;
+  padding: 8px;
+  gap: 8px;
   color: white;
-  font-size: 24px;
-  text-align: center;
-  outline: none;
-  user-select: none;
+  align-items: center;
 }
-
-#toolbar input[type="color"] {
-  padding: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  border: 2px solid white;
+#toolbar button, #toolbar input, #toolbar select {
+  background: #444;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 3px;
 }
-
-#toolbar input[type="range"] {
-  width: 100%;
+#toolbar button:hover, #toolbar input:hover, #toolbar select:hover {
+  background: #555;
 }
-
-.tool.active {
-  background-color: #555;
-  border-radius: 6px;
+#toolbar button.active {
+  background: #1e90ff;
 }
-
+#canvasContainer {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 50px);
+  background: #fff;
+  overflow: hidden;
+}
 canvas {
-  flex-grow: 1;
-  background: white;
-  border: 2px solid #000;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  touch-action: none; /* important for touch panning */
   cursor: crosshair;
-  touch-action: none; /* important for touch support */
 }
