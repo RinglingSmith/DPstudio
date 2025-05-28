@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-  const container = document.getElementById('canvasContainer');
+  const container = document.getElementById('myCanvas');
   const layerManager = new LayerManager(container);
   const historyManager = new HistoryManager(layerManager);
   const toolManager = new ToolManager(layerManager, historyManager);
