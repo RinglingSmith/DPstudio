@@ -1,109 +1,81 @@
+// script.js
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
-let painting = false;
-let color = document.getElementById('color').value;
-let stroke = document.getElementById('stroke').value;
+// Set canvas size to fill remaining space beside toolbar
+function resizeCanvas() {
+  canvas.width = window.innerWidth - document.getElementById('toolbar').offsetWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-canvas.addEventListener('mousedown', () => painting = true);
-canvas.addEventListener('mouseup', () => {
-  painting = false;
-  ctx.beginPath();
-});
-canvas.addEventListener('mousemove', draw);
+// Tools and controls
+let drawing = false;
+let currentTool = 'brush';
+let brushColor = '#000000';
+let brushSize = 5;
+
+const brushBtn = document.getElementById('brush');
+const eraserBtn = document.getElementById('eraser');
+const colorPicker = document.getElementById('colorPicker');
+const brushSizeSlider = document.getElementById('brushSize');
+
+// Update active tool UI
+function setActiveTool(tool) {
+  currentTool = tool;
+  brushBtn.classList.toggle('active', tool === 'brush');
+  eraserBtn.classList.toggle('active', tool === 'eraser');
+}
+
+// Event handlers for tools
+brushBtn.onclick = () => setActiveTool('brush');
+eraserBtn.onclick = () => setActiveTool('eraser');
+
+colorPicker.oninput = (e) => {
+  brushColor = e.target.value;
+}
+
+brushSizeSlider.oninput = (e) => {
+  brushSize = e.target.value;
+}
+
+// Drawing logic
+function startDrawing(e) {
+  drawing = true;
+  draw(e); // draw immediately at click point
+}
+
+function stopDrawing() {
+  drawing = false;
+  ctx.beginPath(); // reset path for smooth drawing
+}
 
 function draw(e) {
-  if (!painting) return;
+  if (!drawing) return;
 
-  ctx.lineWidth = stroke;
+  ctx.lineWidth = brushSize;
   ctx.lineCap = 'round';
-  ctx.strokeStyle = color;
 
+  if (currentTool === 'brush') {
+    ctx.strokeStyle = brushColor;
+  } else if (currentTool === 'eraser') {
+    ctx.strokeStyle = 'white';
+  }
+
+  // Calculate mouse position relative to canvas
   const rect = canvas.getBoundingClientRect();
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  ctx.lineTo(x, y);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.moveTo(x, y);
 }
 
-// Color and stroke listeners
-document.getElementById('color').addEventListener('input', e => {
-  color = e.target.value;
-});
-
-document.getElementById('stroke').addEventListener('input', e => {
-  stroke = e.target.value;
-});
-
-// Clear canvas
-document.getElementById('clear').addEventListener('click', () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-// Resize dialog logic
-const resizeBtn = document.getElementById('resize');
-const resizeDialog = document.getElementById('resizeDialog');
-const applyResize = document.getElementById('applyResize');
-const cancelResize = document.getElementById('cancelResize');
-
-resizeBtn.addEventListener('click', () => {
-  document.getElementById('newWidth').value = canvas.width;
-  document.getElementById('newHeight').value = canvas.height;
-  resizeDialog.style.display = 'block';
-});
-
-cancelResize.addEventListener('click', () => {
-  resizeDialog.style.display = 'none';
-});
-
-applyResize.addEventListener('click', () => {
-  const width = parseInt(document.getElementById('newWidth').value);
-  const height = parseInt(document.getElementById('newHeight').value);
-  canvas.width = width;
-  canvas.height = height;
-  resizeDialog.style.display = 'none';
-});
-
-const drawboard = document.getElementById('drawboard');
-let layers = [];
-let activeLayerIndex = 0;
-
-function createLayer() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 800;
-  canvas.height = 600;
-  canvas.classList.add('layer');
-  canvas.style.position = 'absolute';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  drawboard.appendChild(canvas);
-  layers.push({
-    canvas: canvas,
-    ctx: canvas.getContext('2d')
-  });
-  setActiveLayer(layers.length - 1);
-}
-
-function setActiveLayer(index) {
-  activeLayerIndex = index;
-}
-
-createLayer(); // Call once initially to create your first layer
-
-// Draw on active layer:
-function draw(e) {
-  if (!painting) return;
-  const layer = layers[activeLayerIndex];
-  const ctx = layer.ctx;
-
-  ctx.lineWidth = stroke;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = color;
-
-  const rect = layer.canvas.getBoundingClientRect();
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-}
-
+// Attach mouse events
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseout', stopDrawing);
+canvas.addEventListener('mousemove', draw);

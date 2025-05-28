@@ -1,135 +1,53 @@
+/* style.css */
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #333;
-    display: flex;
-    justify-content: center; /* Center the body content */
-    align-items: center; /* Vertically center */
-    height: 100vh; /* Full viewport height */
-}
-
-.container {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-.toolbar {
-    background-color: #2e2e2e;
-    color: #fff;
-    padding: 10px;
-    width: 250px;  /* Fixed width for the toolbar */
-    height: 100%;
-    overflow-y: auto;  /* Allow scrolling if the toolbar gets too big */
-}
-
-.toolbar .title {
-    font-size: 18px;
-}
-
-.color-picker,
-.stroke-width {
+  margin: 0;
+  overflow: hidden;
+  background: #f0f0f0;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  height: 100vh;
 }
 
-.color-picker label,
-.stroke-width label {
-  font-weight: 600;
-  color: #333;
+#toolbar {
+  background: #333;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 60px;
+  box-sizing: border-box;
 }
 
-.color-input {
+#toolbar button, #toolbar input[type="color"], #toolbar input[type="range"] {
+  margin: 8px 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+}
+
+#toolbar input[type="color"] {
+  padding: 0;
   width: 40px;
   height: 40px;
-  border: none;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  border: 2px solid white;
 }
 
-.color-input:hover {
-  opacity: 0.8;
+#toolbar input[type="range"] {
+  width: 100%;
 }
 
-.options {
-    margin: 10px 0;
-}
-
-button {
-    padding: 10px;
-    background-color: #444;
-    border: 1px solid #555;
-    cursor: pointer;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #555;
-}
-
-/* Ensure the canvas fits within its container */
-.drawboard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
-    margin: 0;
+.tool.active {
+  background-color: #555;
+  border-radius: 6px;
 }
 
 canvas {
-    border: 1px solid #000; /* Optional: adds a border to the canvas */
-    background-color: #fff; /* Optional: sets a white background */
-}
-
-.drawboard {
-  transition: transform 0.1s ease;
-  transform-origin: 0 0; /* Zoom from top-left */
-}
-
-.layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-input[type="color"] {
-    width: 100%;
-    margin: 10px 0;
-    padding: 8px;
-    background-color: #333;
-    color: white;
-    border: none;
-}
-
-input[type="range"] {
-    width: 100%;
-}
-
-/* Styles for the Resize Dialog */
-.resize-dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #2c2c2c;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  display: none;
-  z-index: 10;
-}
-
-.resize-dialog input {
-  margin: 5px 0;
-  padding: 5px;
-  width: 100px;
-}
-
-.dialog-buttons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
+  flex-grow: 1;
+  background: white;
+  border: 2px solid #000;
+  cursor: crosshair;
 }

@@ -1,63 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DP Studio</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="toolbar">
-      <div class="title">Paint Tools</div>
-      
-      <div class="options color-picker">
-        <label for="color">Color</label>
-        <input type="color" id="color" class="color-input" value="#000000"/>
-      </div>
-
-      <div class="options stroke-width">
-        <label for="stroke">Stroke Width</label>
-        <input type="range" id="stroke" min="1" max="50" value="5" />
-      </div>
-
-      <div class="options">
-        <button id="clear">Clear Canvas</button>
-        <button id="resize">Resize Canvas</button>
-      </div>
-
-      <div class="options">
-        <button onclick="createLayer()">Add Layer</button>
-        <button onclick="setActiveLayer(0)">Layer 1</button>
-        <button onclick="setActiveLayer(1)">Layer 2</button>
-      </div>
-    </div>
-
-    <div class="drawboard">
-      <canvas id="myCanvas" width="800" height="600"></canvas>
-    </div>
+  <div id="toolbar">
+    <button id="brush" class="tool active" title="Brush">🖌️</button>
+    <button id="eraser" class="tool" title="Eraser">🩹</button>
+    <input type="color" id="colorPicker" title="Pick Color" value="#000000">
+    <label for="brushSize">Size:</label>
+    <input type="range" id="brushSize" min="1" max="50" value="5">
   </div>
-
-  <!-- Resize Dialog -->
-  <div class="resize-dialog" id="resizeDialog">
-    <label for="width">Width:</label>
-    <input type="number" id="newWidth" value="800" />
-    <br />
-    <label for="height">Height:</label>
-    <input type="number" id="newHeight" value="600" />
-    
-    <div class="dialog-buttons">
-      <button id="applyResize">Apply</button>
-      <button id="cancelResize">Cancel</button>
-    </div>
-  </div>
-
+  <canvas id="myCanvas"></canvas>
   <script src="script.js"></script>
-  <script src="zoom.js"></script>
-  <script src="layer.js"></script>
-  <script src="layerstool.js"></script>
-  <script src="selecttool.js"></script>
-  <script src="texttool.js"></script>
-  <script src="toolpanel.js"></script>
 </body>
 </html>
