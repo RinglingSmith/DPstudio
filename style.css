@@ -84,6 +84,16 @@ canvas {
     background-color: #fff; /* Optional: sets a white background */
 }
 
+.drawboard {
+  transition: transform 0.1s ease;
+  transform-origin: 0 0; /* Zoom from top-left */
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 input[type="color"] {
     width: 100%;

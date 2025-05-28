@@ -63,3 +63,47 @@ applyResize.addEventListener('click', () => {
   canvas.height = height;
   resizeDialog.style.display = 'none';
 });
+
+const drawboard = document.getElementById('drawboard');
+let layers = [];
+let activeLayerIndex = 0;
+
+function createLayer() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 600;
+  canvas.classList.add('layer');
+  canvas.style.position = 'absolute';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  drawboard.appendChild(canvas);
+  layers.push({
+    canvas: canvas,
+    ctx: canvas.getContext('2d')
+  });
+  setActiveLayer(layers.length - 1);
+}
+
+function setActiveLayer(index) {
+  activeLayerIndex = index;
+}
+
+createLayer(); // Call once initially to create your first layer
+
+// Draw on active layer:
+function draw(e) {
+  if (!painting) return;
+  const layer = layers[activeLayerIndex];
+  const ctx = layer.ctx;
+
+  ctx.lineWidth = stroke;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = color;
+
+  const rect = layer.canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+

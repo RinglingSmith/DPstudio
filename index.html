@@ -25,6 +25,12 @@
         <button id="clear">Clear Canvas</button>
         <button id="resize">Resize Canvas</button>
       </div>
+
+      <div class="options">
+        <button onclick="createLayer()">Add Layer</button>
+        <button onclick="setActiveLayer(0)">Layer 1</button>
+        <button onclick="setActiveLayer(1)">Layer 2</button>
+      </div>
     </div>
 
     <div class="drawboard">
@@ -47,5 +53,6 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="zoom.js"></script>
 </body>
 </html>
