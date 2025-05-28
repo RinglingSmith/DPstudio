@@ -8,9 +8,18 @@
   <div id="toolbar">
     <button id="brush" class="tool active" title="Brush">🖌️</button>
     <button id="eraser" class="tool" title="Eraser">🩹</button>
+    <button id="fill" class="tool" title="Fill">🪣</button>
+    <button id="rect" class="tool" title="Rectangle">▭</button>
+    <button id="circle" class="tool" title="Circle">⚪</button>
+    
     <input type="color" id="colorPicker" title="Pick Color" value="#000000">
+    
     <label for="brushSize">Size:</label>
     <input type="range" id="brushSize" min="1" max="50" value="5">
+
+    <button id="undo" title="Undo">↩️</button>
+    <button id="redo" title="Redo">↪️</button>
+    <button id="save" title="Save">💾</button>
   </div>
   <canvas id="myCanvas"></canvas>
   <script src="script.js"></script>
