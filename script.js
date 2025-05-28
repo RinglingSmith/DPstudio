@@ -219,3 +219,31 @@ canvas.addEventListener('mouseup', () => {
     ctx.drawImage(tempCanvas, 0, 0);
   });
 });
+
+const container = document.getElementById('drawboard-container');
+
+const layers = [];
+let activeLayerIndex = 0;
+
+function createLayer(name = `Layer ${layers.length + 1}`) {
+  const layerCanvas = document.createElement('canvas');
+  const layerCtx = layerCanvas.getContext('2d');
+
+  // Match size and styles
+  const rect = container.getBoundingClientRect();
+  layerCanvas.width = rect.width;
+  layerCanvas.height = rect.height;
+  layerCanvas.style.position = 'absolute';
+  layerCanvas.style.top = 0;
+  layerCanvas.style.left = 0;
+  layerCanvas.style.zIndex = layers.length; // Stack order
+  layerCanvas.dataset.name = name;
+
+  container.appendChild(layerCanvas);
+  layers.push({ canvas: layerCanvas, ctx: layerCtx, name, visible: true });
+
+  return layers.length - 1;
+}
+
+// Initial layer
+activeLayerIndex = createLayer();
